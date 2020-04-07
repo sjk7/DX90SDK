@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE HelpTOC>
+<HelpTOC DTDVersion="1.0" PluginStyle="Hierarchical" PluginTitle="DirectX 9.0 SDK Update (Summer 2003)">
+	<HelpTOCNode Id="2" NodeType="Regular" Title="DirectX 9.0 SDK Update (Summer 2003) C++" Url="/DirectX9_c/directx/directx9cpp.htm">
+		<HelpTOCNode NodeType="TOC" Url="DirectX9_c" />
+	</HelpTOCNode>
+	<HelpTOCNode Id="3" NodeType="Regular" Title="DirectX 9.0 SDK Update (Summer 2003) Managed" Url="/DirectX9_m/directx/directx9m.htm">
+		<HelpTOCNode NodeType="TOC" Url="DirectX9_m" />
+	</HelpTOCNode>
+</HelpTOC>

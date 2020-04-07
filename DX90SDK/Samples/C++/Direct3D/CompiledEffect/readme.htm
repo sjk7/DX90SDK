@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>CompiledEffect Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-weight: bold; font-size: 130%; }
+.h2 { font-family: arial; font-weight: bold; font-size: 110%; vertical-align: super; }
+.p { font-family: arial; font-size: 80%; }
+.header { padding: 3px; font-family: tahoma; font-weight: bold; color: white }
+.chart { font-family: monospace; font-size: 75%; }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+CompiledEffect Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="CompiledEffect.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample shows how an ID3DXEffect object can be compiled when the project is built and loaded directly as a binary file at run time.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\CompiledEffect</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin\CompiledEffect.exe</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR>
+<BR>
+<FONT CLASS="h2">Sample Overview</FONT><BR>
+Large-scale projects may contain dozens or even hundreds of shader and effect files. Compiling these files at run time can cause a noticeable delay during initialization, and this delay is incurred each and every time the project is run; instead, these files can be compiled as part of your project build process, eliminating the need for any further compilation during program execution. Since these files will only need to be compiled when changes are made, no additional build time is spent on effect files which have already been compiled. Note that when developing or debugging effect files it's still beneficial to compile at run time, which allows more debugging flexibility. Note that the process illustrated in this sample is identical whether compiling a complete effect object or individual shaders. All that would change would be the target profile command line passed to the compiler.
+<BR>
+<BR>
+<BR>
+<FONT CLASS="h2">How does the sample work?</FONT><BR>
+The code is virtually identical to the <i>BasicHLSL</i> sample except for a couple important differences:
+<UL>
+<LI>The call to <b>D3DXCreateEffectFromFile</b> is passed the filename of the compiled effect (CompiledEffect.fxo) instead of the filename of the effect source (CompiledEffect.fx).
+<LI>No debugging flags are passed to the <B>D3DXCreateEffectFromFile</B> function. Instead, flags are passed to the effect compiler to enable shader debugging. Which compiler flags are used depends on which Visual Studio build configuration is currently selected. 
+</UL>
+<P>
+The program used to compile shaders at build time is <B>fxc</B>. This command-line utility ships with the SDK, and wraps the <B>ID3DXEffectCompiler</B> calls used to perform the compilation. It's interesting to note that you could create your own shader compiler fairly easily using the <B>ID3DXEffectCompiler</B> interface, but <B>fxc</B> should be flexible enough for most needs. The commands used to build release and debug versions of a hypothetical <I>MyEffect.fx</I> file are:
+<BR>
+<BR>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Release:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>fxc /Tfx_2_0 /FoMyEffect.fxo MyEffect.fx</TD>
+</TR>
+<TR>
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Debug:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>fxc /Od /Zi /Tfx_2_0 /FoMyEffect.fxo MyEffect.fx</TD>
+</TR>
+</TABLE>
+<BR>
+Run <B>fxc</B> without any arguments for usage information.
+<BR>
+<BR>
+<BR>
+<FONT CLASS="h2">Build Environment Configuration</FONT>
+<BR>
+Here are the steps taken to configure the build environment. These steps should be performed for every effect file you wish to be compiled as part of the build process:
+<BR>
+<BR>
+<TABLE STYLE="border: 1px solid black" WIDTH="100%" BGCOLOR="#F5F5F5" CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">     
+<B>Visual Studio.NET:</B>
+<OL>
+<LI>Open the CompiledEffect sample project inside Visual Studio.NET 
+<LI>From within the Solution Explorer window, right click on <i>CompiledEffect.fx</i> and select "Properties" from the context menu.
+<LI>Select "Configuration Properties->Custom Build Step" to view the custom build step directives. The specific compile command issued depends on the project build configuration, as you can verify by scrolling through the "Configuration" combo box.
+</OL>
+<BR>
+<B>Visual C++ 6.0:</B>
+<OL>
+<LI>Open the CompiledEffect sample project inside Visual C++ 6.0
+<LI>From within the Window window, right click on <i>CompiledEffect.fx</i> and select "Settings" from the context menu.
+<LI>Select the "Custom Build" tab to view the custom build step directives. The specific compile command issued depends on the project build configuration, as you can verify by scrolling through the "Settings For" combo box.
+</OL>
+</TD>
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

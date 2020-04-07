@@ -1,0 +1,351 @@
+<HTML>
+    <HEAD>
+        <TITLE>HDRLighting Direct3D Sample</TITLE>
+        <STYLE TYPE="text/css"> 
+        .h1 { font-family: tahoma; font-weight: bold; font-size: 130%; }
+	.h2 { font-family: arial; font-weight: bold; vertical-align: super; }
+	.p { font-family: arial; font-size: 80%; }
+	.header { padding: 3px; font-family: tahoma; font-weight: bold; color: white }
+	.chart { font-family: monospace; font-size: 75%; }
+	</STYLE>
+    </HEAD>
+    <BODY bgColor="#ffffff" MARGINHEIGHT="2" TOPMARGIN="2" LEFTMARGIN="2" RIGHTMARGIN="2">
+        <!-- HEADER - DO NOT MODIFY -->
+        <TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+                <TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER="0"></TD>
+                <TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER="0"></TD>
+            </TR>
+        </TABLE>
+        <!-- END HEADER -->
+        <!-- MASTER TABLE - DO NOT MODIFY -->
+        <TABLE WIDTH="100%" BORDER="0" CELLPADDING="20">
+            <TR>
+                <TD CLASS="p">
+                    <!-- END MASTER TABLE -->
+                    <FONT CLASS="h1">
+                        <!-- INSERT SAMPLE NAME --> HDRLighting Sample 
+                        <!-- END SAMPLE NAME -->
+                    </FONT>
+                    <HR>
+                    <TABLE WIDTH="100%" BGCOLOR="#ffffff" BORDER="0" CELLPADDING="10" CELLSPACING="0">
+                        <TR>
+                            <TD CLASS="p">
+                                <BR CLEAR="left">
+                                <IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace="20" src="HDRLighting.jpg" align="left" vspace="10">
+                                <FONT CLASS="h2">Description</FONT><BR>
+                                <!-- INSERT SAMPLE DESCRIPTION --> This sample demonstrates some high dynamic 
+                                range lighting effects using floating point textures. Integer texture formats 
+                                have a limited range of discrete values, which results in lost color 
+                                information under dynamic lighting conditions; conversely, floating point 
+                                formats can store very small or very large color values, including values 
+                                beyond the displayable 0.0 to 1.0 range. This flexibility allows for dynamic 
+                                lighting effects, such as blue-shifting under low lighting and blooming under 
+                                intense lighting. This sample also employs a simple light adaptation model, 
+                                under which the camera is momentarily over-exposed or under-exposed to changing 
+                                light conditions. <BR><BR>The algorithms described in this sample are based very closely on the lighting effects implemented in Masaki Kawase's <A HREF="http://www.daionet.gr.jp/~masa/rthdribl/">Rthdribl sample</A> and the tone mapping process described in the whitepaper <A HREF="http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf"><i>Photographic Tone Reproduction for Digital Images</i></A> written by Erik Reinhard, Mike Stark, Peter Shirley and Jim Ferwerda.
+                                <!-- END SAMPLE DESCRIPTION -->
+                                <BR CLEAR="left">
+                                <BR CLEAR="left">
+                            </TD>
+                        </TR>
+                    </TABLE>
+                    <HR>
+                    <BR CLEAR="left">
+                    <FONT CLASS="h2">Path</FONT>
+                    <TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="4" BORDER="0">
+                        <TR>
+                            <!-- PATH INFORMATION -->
+                            <TD CLASS="chart" BGCOLOR="#dddddd" ALIGN="right"><B>Source:</B></TD>
+                            <TD CLASS="chart" BGCOLOR="#eeeeee">DX90SDK\Samples\C++\Direct3D\HDRLighting</TD>
+                            <!-- END PATH INFORMATION -->
+                        </TR>
+                        <TR>
+                            <!-- PATH INFORMATION -->
+                            <TD CLASS="chart" BGCOLOR="#dddddd" ALIGN="right"><B>Executable:</B></TD>
+                            <TD CLASS="chart" BGCOLOR="#eeeeee">DX90SDK\Samples\C++\Direct3D\Bin\HDRLighting.exe</TD>
+                            <!-- END PATH INFORMATION -->
+                        </TR>
+                    </TABLE>
+                    <P>
+                        <BR CLEAR="left">
+                        <FONT CLASS="h2">Why is this sample interesting?</FONT><BR>
+                        Light in the real world has a very high ratio between highest and lowest 
+                        luminances; this ratio is called <i><STRONG>dynamic range</STRONG></i>, and is 
+                        approximately 1x10<sup>12</sup>:1 for viewable light in everyday life, from sun 
+                        to starlight; however, the human visual system is only capable of a dynamic 
+                        range around 1000:1 at a particular exposure. In order to see light spread across a high 
+                        dynamic range, the human visual system automatically adjust it's exposure to 
+                        light, selecting a narrow range of luminances based on the intensity of 
+                        incoming light. This process is not instantaneous, as you'll notice when 
+                        entering a dark building on a sunny day, or vice versa. This delayed exposure 
+                        adjustment is referred to as <EM><STRONG>light adaptation</STRONG></EM>, and can be simulated in a real-time application.
+                    </P>
+                    <P>Computer displays and print media have a dynamic range around 100:1, so 
+                        compromises will have to be made when trying to display a scene with a higher 
+                        dynamic range; this sample borrows from a technique originally developed for 
+                        use in photography called&nbsp;<STRONG><EM>tone mapping</EM></STRONG>, which describes the process of mapping a high dynamic range image 
+                        into a low dynamic range space. Tone mapping effectively produces the same effect as the automatic exposure control which happens in the human visual system. 
+         
+                    </P>
+                    <P>Finally, when a bright light hits strikes a lens, certain aberrations naturally 
+                        occur, including bloom and star effects (<EM>figure 3</EM>); If high intensity light values are not discarded during the render process, these effects can be produced after 
+                        the scene has been rendered to add an additional level of realism to the image; 
+                        since these are post-process effect, the time required to produce them depends only on the screen resolution, 
+                        regardless of scene or lighting complexity.</P>
+                    <P>
+                        <FONT CLASS="h2"></FONT>&nbsp;</P>
+                    <P><FONT class="h2">How does this sample work?</FONT><BR>
+                        This sample uses new DirectX® 9<sup>&nbsp;</sup> floating-point textures to 
+                        store high dynamic range lighting information for the scene. Integer texture 
+                        formats are clamped from 0.0f to 1.0f in the pixel shader, but floating-point 
+                        textures are allowed to contain any value, bound only to the constraints of 
+                        available bits for mantissa and exponent. For this sample, scene objects are 
+                        textured with normal integer format textures, but the sphere objects representing lights are shaded with a high range of values, which effectively creates emissive lights. All objects in the scene are shaded using an illumination model that calculates ambient, diffuse, and specular lighting based on the position and intensity of the lights; since these lights be assigned high values, the 
+                        resulting colors of illuminated objects can extend far beyond the 1.0f cutoff. If a 
+                        floating-point texture is not used to capture these high dynamic range 
+                        values, this light data will be lost, and the scene will appear 
+                        over-exposed (<EM>figure 1</EM>). If instead the scene is rendered onto a 
+                        floating point surface, the high dynamic range information will be stored and 
+                        the scene can then be tone mapped to an appropriate low dynamic range for 
+                        display (<EM>figure 2</EM>).
+                    </P>
+                    <P>&nbsp;</P>
+                    <P>
+                        <!-- IMAGE LIST -->
+                        <TABLE STYLE="BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px solid; BORDER-LEFT: black 1px solid; BORDER-BOTTOM: black 1px solid" WIDTH="100%" BGCOLOR="#ffffff" CELLPADDING="20" CELLSPACING="0" ID="Table1">
+                                <TR>
+                                    <TD CLASS="p">
+                                        <!-- IMAGE -->
+                                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table2">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/tonemap_off.jpg"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 1. Without tone mapping</FONT></TD>
+                                            </TR>
+                                        </TABLE>
+                                        <!-- END IMAGE -->
+                                    </TD>
+                                    <TD CLASS="p">
+                                        <!-- IMAGE -->
+                                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table3">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/tonemap_on.jpg"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 2. With tone mapping</FONT></TD>
+                                            </TR>
+                                        </TABLE>
+                                    <!-- END IMAGE -->
+                                    <!-- SPACER -->
+                                    <TD WIDTH="100%">&nbsp;</TD>
+                                    <!-- END SPACER -->
+                                </TR>
+                                <TR>
+                </TD>
+                <TD CLASS="p">
+                    <!-- IMAGE -->
+                    <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table4">
+                        <TR>
+                            <TD VALIGN="bottom"><IMG SRC="doc/glare_on.jpg"></TD>
+                        </TR>
+                        <TR>
+                            <TD><FONT SIZE="1">Fig 3. With glare effects</FONT></TD>
+                        </TR>
+                    </TABLE>
+                    <!-- END IMAGE -->
+                </TD>
+                <TD>
+                </TD>
+                <!-- SPACER -->
+                <TD WIDTH="100%">&nbsp;</TD>
+                <!-- END SPACER --> </TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE LIST -->
+        <BR clear="left">
+        <BR clear="left">
+        <BR clear="left">
+        <P><EM>Figure 4 </EM>shows the top level flow for the sample. The scene is first 
+            rendered onto a floating-point texture, which has the same dimensions as 
+            the back buffer. Since the scene will be sampled quite a few times to create 
+            the post-processing effects, a good first step is to scale down the scene 
+            to minimize the number of pixels the shaders must sample, which has the added benefit of making post process effects larger when their associated textures are scaled up to full size. The 
+            scaled scene texture is processed to measure the average luminance of 
+            the scene. Using this average luminance value, it's possible to determine which 
+            pixels in the scene will be bright after the scene has been tone mapped to a 
+            low dynamic range. By excluding all color data in the scene except brightly-lit areas a bright-pass filtered copy of the scene is created which can be used as the source of post-process lighting effects. 
+<BR>
+<BR>The scene in this sample is rendered using a 
+            pixel shader to control the ambient, diffuse, and specular 
+            contribution of each light at every pixel. Since the lights for the 
+            featured scene are very bright, most of the pixels have per-channel color 
+            components above the 0.0 to 1.0 range displayable by the graphics card, so 
+            this texture appears mostly white when viewed directly. However, the color 
+            information above 1.0 is not lost, but simply needs to be tone mapped into the 
+            0.0 to 1.0 range. During a final pass, the scene is tone mapped to the desired luminance range and the post-process image effects are blended on top of the scene to create the final image.
+        </P>
+        <!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/flow.jpg"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Fig 4. Render flow</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+	<P>
+          <FONT CLASS="h2"><i>Calculating Luminance</i></FONT><BR>
+	Before your program can scale the intensity of your scene, it will need to determine how bright the scene is to begin with. The goal is to calculate a good estimate for the average scene luminance while minimizing the amount of time spent making the calculation; obviously, the calculation can be sped up by reducing the number of sampled texels, but you risk missing bright areas with a sparse test pattern. The approach used in this sample is to first scale the scene by 1/4 x 1/4, using the average of each 4x4 block of texels to down-sample. This scaled texture is also used to create the source textures for the lighting effects, so it's important the scale operation is precise to avoid flickering artifacts as the camera moves around the scene.<BR>
+<BR>
+The process used to measure the average scene luminance and perform tone mapping is featured in the whitepaper <A HREF="http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf"><i>Photographic Tone Reproduction for Digital Images</i></A>, from which the luminance equation below is taken:<BR>
+
+<!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/eq1.gif"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Equation 1. Average luminance</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+<BR>
+The average scene luminance used for later calculations is the antilogarithm of the average log values for all sampled pixels. &delta; contains a small value to handle the case of pure black texels. This equation is implemented using 4 pixel shader passes called from the <B>MeasureLuminance()</B> method:
+<OL>
+<LI>Sample average log() values into a 64x64 texture
+<LI>Downscale to 16x16
+<LI>Downscale to 4x4
+<LI>Downscale to 1x1 and perform an exp() operation on the result
+</OL>
+By keeping the calculation result inside a 1x1 texture, the calculations which require the average luminance value can be done completely on the video card without requiring any AGP transfers.
+        <P>
+          <FONT CLASS="h2"><i>Exposure Control</i></FONT><BR>
+Exposure control is the process of finding an appropriate low-dynamic range view of the high dynamic range scene. In a physical lens system, the aperture is adjusted to limit the amount of light entering the system. The process used in computer graphics to emulate exposure control is commonly called <I>tone mapping</I>, which refers to the process of mapping a high dynamic range image space onto a low-dynamic range space suitable for video display. Unlike exposure control, all the high range data is available for use when tone mapping; so, depending on the operator that's used, the image may contain more detail from bright and dark areas simultaneously than would be possible using a traditional camera.<BR>
+<BR>
+After the average scene luminance has been calculated, the high dynamic range scene texture can be scaled according to a target average luminance, represented by &alpha; in the following equation:<BR>
+<!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/eq2.gif"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Equation 2. Scale to target luminance</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+<BR>
+Equation 2 simply produces a linear scaling of the scene luminance centered around the target average luminance for the final scene; however, the resulting values have not yet been compressed to fit within the low-dynamic range of 0.0 to 1.0 viewable on the monitor. The tone mapping operator performs the desired compression:<BR>
+<!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/eq3.gif"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Equation 3. Tone mapping</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+<P>
+          <FONT CLASS="h2"><i>Light Adaptation</i></FONT><BR>
+The human visual system doesn't adjust instantly for changing light conditions, and this behavior can be easily simulated by slightly extending the tone mapping calculations: The luminance value to which the user is currently adapted is used instead of the average scene luminance within the tone mapping equations. This adapted luminance value is stored in a 1x1 texture and is adjusted each frame to slowly track the measured scene luminance:<BR><BR>
+
+<TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="4" BORDER="0">
+<TR>
+<TD CLASS="chart" BGCOLOR="#dddddd">
+float fNewAdaptation = fAdaptedLum + (fCurrentLum - fAdaptedLum) * ( 1 - pow( 0.98f, 30 * g_fElapsedTime ) );
+</TD>
+</TR>
+</TABLE>
+<BR>
+
+For example, if the camera is stationary the adapted luminance will eventually match the measured luminance, resulting in an identical tone mapped output as when adaptation is disabled; however, if the camera is moved to focus on an area of different lighting magnitude, the image will appear over- or under-exposed while the viewer adjusts to the new lighting conditions. The adaptation model used in this sample is not intended to be a realistic model of human adaptation, which can take longer than a half hour for full dark adaptation.
+<BR>
+<P>
+          <FONT CLASS="h2"><i>Bright-Pass Filter</i></FONT><BR>
+Tone mapping is performed in two places within the code; once in <B>Render()</B> as part of the final shader pass to compose the glare textures onto the scene, and once as part of the bright-pass filter. The bright-pass filter uses tone mapping to first determine what areas of the final scene image will be bright, and then excludes the remaining data. Since high dynamic range lighting effects are relative to the current exposure, these effects can be performed on a tone mapped image and added directly to the scene output; this offers the advantage of being able to use integer textures for glare generation.<BR>
+<BR>
+As shown in the following code snippet, the bright-pass filter first maps the scene to a desired middle gray target luminance before subtracting out the dark areas. The tone mapping operator which transforms the scene luminance to the 0.0 to 1.0 range is modified slightly from Equation 3: Instead of dividing the luminance by 1 plus luminance, an offset value replaces '1' in the equation. As this offset value increases, the relative separation between bright and dark regions of the scene also increases.
+<BR>
+<BR>
+<TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="4" BORDER="0">
+<TR>
+<TD CLASS="chart" BGCOLOR="#dddddd">
+// Determine what the pixel's value will be after tone mapping occurs<BR>
+vSample.rgb *= g_fMiddleGray/(fAdaptedLum + 0.001f);<BR>
+<BR>
+// Subtract out dark pixels<BR>
+vSample.rgb -= BRIGHT_PASS_THRESHOLD;<BR>
+<BR>
+// Clamp to 0<BR>
+vSample = max(vSample, 0.0f);<BR>
+<BR>
+// Map the resulting value into the 0 to 1 range. Higher values for<BR>
+// BRIGHT_PASS_OFFSET will isolate lights from illuminated scene <BR>
+// objects.<BR>
+vSample.rgb /= (BRIGHT_PASS_OFFSET+vSample);<BR>
+</TD>
+</TR>
+</TABLE>
+<BR>
+
+<BR>
+	<P>
+          <FONT CLASS="h2"><i>Bloom Effect</i></FONT><BR>
+Before the bloom is performed, the bright-pass filtered image is first scaled and blurred down to 1/8 x 1/8 scale of the original scene texture. The bloom pass is simply a 2-pass separable horizontal and vertical Gaussian blur of the scaled bright-pass filtered scene; as shown in figure 5, the texture is first blurred along the horizontal, and the horizontally-blurred texture is then blurred along the vertical to complete the process. As part of the final scene pass, the bloom texture is scaled the size of the back buffer using bilinear filtering and added directly to the output of the scene. 
+<BR>
+<!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/bloom.jpg"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Fig 5. Bloom effect</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+<BR>
+	<P>
+          <FONT CLASS="h2"><i>Star Effect</i></FONT><BR>
+The star effect may require as many as three passes to render each of the star lines; the star patterns used in this sample require as many as 8 lines, resulting in a potential cost of 24 passes to render fully. The <B>GlareDef.h</B> file contains the definitions for the various star patterns, which describe the characteristics of the different star types, including number of lines, line directions, and chromatic offsets. As shown in figure 6, once all the individual directional lines have been rendered, the average texel value across the individual line textures is used to create the final composite star texture, which is scaled and added directly to the final scene image.
+<BR>
+<!-- IMAGE -->
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table5">
+            <TR>
+                <TD VALIGN="bottom"><IMG SRC="doc/star.jpg"></TD>
+            </TR>
+            <TR>
+                <TD><FONT SIZE="1">Fig 6. Star effect</FONT></TD>
+            </TR>
+        </TABLE>
+        <!-- END IMAGE -->
+
+<BR>
+<BR>
+<P>
+          <FONT CLASS="h2">References</FONT><BR>
+Real-Time High Dynamic Range Image-Based Lighting (Rthdribl)<BR>
+<i>Masaki Kawase</i><BR>
+<A HREF="http://www.daionet.gr.jp/~masa/rthdribl/">http://www.daionet.gr.jp/~masa/rthdribl/</A>
+<BR>
+<BR>
+"Photographic Tone Reproduction for Digital Images"<BR>
+<i>Erik Reinhard, Mike Stark, Peter Shirley and Jim Ferwerda</i><BR>
+<A HREF="http://www.cs.utah.edu/~reinhard/cdrom/">http://www.cs.utah.edu/~reinhard/cdrom/</A>
+<BR>
+<BR>
+            <!-- FOOTER - DO NOT MODIFY -->
+            <BR clear="left">
+            <BR clear="left">
+            <BR clear="left">
+            <HR>
+            <CENTER>
+                Copyright (c) Microsoft Corporation. All rights reserved.
+            </CENTER>
+        <!-- END FOOTER -->
+        <!-- MASTER TABLE - DO NOT MODIFY --> </TD></TR></TBODY></TABLE> 
+        <!-- END MASTER TABLE -->
+    </BODY>
+</HTML>

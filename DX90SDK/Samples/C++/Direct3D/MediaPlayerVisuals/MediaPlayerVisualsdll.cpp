@@ -1,0 +1,84 @@
+// MediaPlayerVisualsdll.cpp : Implementation of DLL Exports.
+
+#include "stdafx.h"
+#include "resource.h"
+#include <initguid.h>
+#include "wmpplug.h"
+#include "iMediaPlayerVisuals.h"
+
+#include "iMediaPlayerVisuals_i.c"
+#include "MediaPlayerVisuals.h"
+
+HINSTANCE g_hInstance = NULL;
+
+CComModule _Module;
+
+BEGIN_OBJECT_MAP(ObjectMap)
+OBJECT_ENTRY(CLSID_MediaPlayerVisuals, CMediaPlayerVisuals)
+END_OBJECT_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// DLL Entry Point
+
+extern "C"
+BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID /*lpReserved*/)
+{
+    g_hInstance = hInstance;
+
+    if (dwReason == DLL_PROCESS_ATTACH)
+    {
+        _Module.Init(ObjectMap, hInstance, &LIBID_MediaPlayerVisualsLib);
+        DisableThreadLibraryCalls(hInstance);
+    }
+    else if (dwReason == DLL_PROCESS_DETACH)
+        _Module.Term();
+    return TRUE;    // ok
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Used to determine whether the DLL can be unloaded by OLE
+
+STDAPI DllCanUnloadNow(void)
+{
+    return (_Module.GetLockCount()==0) ? S_OK : S_FALSE;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Returns a class factory to create an object of the requested type
+
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
+{
+    return _Module.GetClassObject(rclsid, riid, ppv);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// DllRegisterServer - Adds entries to the system registry
+
+STDAPI DllRegisterServer(void)
+{
+    // registers object, typelib and all interfaces in typelib
+
+    HRESULT hr = _Module.RegisterServer();
+
+    // Notify WMP that plugin has been added
+
+    WMPNotifyPluginAddRemove();
+
+    return hr;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// DllUnregisterServer - Removes entries from the system registry
+
+STDAPI DllUnregisterServer(void)
+{
+    HRESULT hr = _Module.UnregisterServer();
+
+    // Notify WMP that plugin has been removed
+
+    WMPNotifyPluginAddRemove();
+
+    return hr;
+}
+
+

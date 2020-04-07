@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="CompiledEffect"
+	ProjectGUID="{9C04CC2D-C188-4443-A185-CB0BCA6ED98D}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\common;"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9dt.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/CompiledEffect.pdb"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\common"
+				PreprocessorDefinitions="WIN32,_WINDOWS"
+				StringPooling="TRUE"
+				RuntimeLibrary="5"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="1"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Debug|Win32"
+			OutputDirectory="Unicode Debug"
+			IntermediateDirectory="Unicode Debug"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\common"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,UNICODE,_UNICODE"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9dt.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/CompiledEffect.pdb"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Release|Win32"
+			OutputDirectory="Unicode Release"
+			IntermediateDirectory="Unicode Release"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\common"
+				PreprocessorDefinitions="WIN32,_WINDOWS,UNICODE,_UNICODE"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="1"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug Shaders|Win32"
+			OutputDirectory="Debug Shaders"
+			IntermediateDirectory="Debug Shaders"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\common;"
+				PreprocessorDefinitions="DEBUG_SHADERS,WIN32,_DEBUG,_WINDOWS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9dt.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/CompiledEffect.pdb"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Debug Shaders|Win32"
+			OutputDirectory="Unicode Debug Shaders"
+			IntermediateDirectory="Unicode Debug Shaders"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\common"
+				PreprocessorDefinitions="DEBUG_SHADERS,WIN32,_DEBUG,_WINDOWS,UNICODE,_UNICODE"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="DXStdAfx.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
+				AdditionalDependencies="dxerr9.lib dinput8.lib dxguid.lib d3dx9dt.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)/CompiledEffect.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/CompiledEffect.pdb"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="CompiledEffect.manifest">
+			</File>
+			<File
+				RelativePath="..\..\Common\directx.ico">
+			</File>
+			<File
+				RelativePath="resource.h">
+			</File>
+			<File
+				RelativePath="winmain.rc">
+			</File>
+		</Filter>
+		<Filter
+			Name="Common"
+			Filter="">
+			<File
+				RelativePath="..\..\common\d3dapp.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\d3dapp.h">
+			</File>
+			<File
+				RelativePath="..\..\common\d3denumeration.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\d3denumeration.h">
+			</File>
+			<File
+				RelativePath="..\..\common\d3dsettings.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\d3dsettings.h">
+			</File>
+			<File
+				RelativePath="..\..\common\d3dutil.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\d3dutil.h">
+			</File>
+			<File
+				RelativePath="..\..\common\dxstdafx.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="dxstdafx.h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\dxstdafx.h">
+			</File>
+			<File
+				RelativePath="..\..\common\dxutil.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Shaders|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\dxutil.h">
+			</File>
+		</Filter>
+		<File
+			RelativePath="CompiledEffect.cpp">
+		</File>
+		<File
+			RelativePath="CompiledEffect.fx">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for release: $(InputPath)"
+					CommandLine="fxc /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for release: $(InputPath)"
+					CommandLine="fxc /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Unicode Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for release: $(InputPath)"
+					CommandLine="fxc /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Unicode Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for release: $(InputPath)"
+					CommandLine="fxc /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug Shaders|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for debug: $(InputPath)"
+					CommandLine="fxc /Od /Zi /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Unicode Debug Shaders|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="fxc compile for debug: $(InputPath)"
+					CommandLine="fxc /Od /Zi /Tfx_2_0 /Fo$(ProjectDir)$(InputName).fxo $(InputPath)
+"
+					Outputs="$(ProjectDir)$(inputName).fxo"/>
+			</FileConfiguration>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

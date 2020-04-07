@@ -1,0 +1,212 @@
+<HTML>
+<HEAD>
+<TITLE>HLSLwithoutEffects Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.h3 { font-family: arial; font-size: 12px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+HLSLwithoutEffects Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="HLSLwithoutEffects.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample shows an example of how to use Microsoft Direct3D's High-Level 
+Shader Language (HLSL), without the use of the Direct3D Extension (D3DX) effect 
+interfaces.  Not using the ID3DXEffect interface is a more difficult 
+method of using HLSL.  See the BasicHLSL sample for a simpler method of using HLSL.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\HLSLwithoutEffects</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">User's Guide</FONT><BR> 
+<TABLE STYLE="border: 1px solid black" WIDTH="100%" BGCOLOR="#F5F5F5" CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<B>General controls defined in the sample:</B>
+<P>
+<TABLE CLASS="p" CELLSPACING=2 CELLPADDING=2 BORDER=0>
+<TR BGCOLOR=#DDDDDD>
+<TD><B>Key</B></TD>
+<TD><B>Action</B></TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>W/S</TD>
+<TD>Move forward/backward</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Q,E,A,D</TD>
+<TD>Strafe</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>F2</TD>
+<TD>Change device</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Esc</TD>
+<TD>Quit</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Sample Overview</FONT><BR>
+
+The sample demonstrates using High-Level Shader Language (HLSL) to
+write vertex shaders without using the Direct3D Extension (D3DX)
+Effect Interfaces. HLSL is a language that closely resembles C
+syntax and constructs.  By writing shaders in HLSL instead of assembly
+language, developers can take advantage of not only the features
+and elements of the language they are already familiar with, but
+also the great optimization capabilities offered by the D3DX
+shader compiler.
+
+<BR clear="left">
+<BR clear="left">
+
+<FONT CLASS="h2">How does the sample work?</FONT><BR>
+
+The scene that this sample renders consists of a square grid of
+triangles lying on the XZ plane.  In each frame, the vertices of this
+grid will move up or down along the Y direction based on 
+a function of their distance to the origin and time.  The vertices are also lit
+using another function of the distance and time.  The time is incremented
+for each frame.  Because the Y coordinate and color of the vertices are
+generated in each frame, they do not need to be stored.  Therefore,
+the vertex declaration only contains a D3DXVECTOR2 member, for the X
+and Z coordinates.
+<P>
+During initialization, the sample calls D3DXCompileShaderFromFile()
+to compile the sample's shader function stored in a file into binary shader
+code, that can be understood by the 3D device.  After this process,
+a ID3DXBuffer containing the shader code and a ID3DXConstantTable
+that allows the application to get and set the global variables
+of the shader are created.  Then, the sample calls CreateVertexShader() with the
+shader code to obtain a IDirect3DVertexShader9 object that can be
+passed to the 3D device for execution.
+<P>
+In FrameMove(), the sample uses the ID3DXConstantTable interface obtained
+from initialization to set the shader's global variables "mViewProj" and
+"fTime", in order to update the view + projection transformation
+and time parameter for the shader.  At render time, the sample
+calls SetVertexShader() to enable vertex shader rendering on the device.
+When DrawIndexedPrimitive() is called after that, the vertex shader
+will be invoked once for every vertex processed.
+<P>
+In the sample, the vertex shader is written in a text file called
+HLSLwithoutEffects.vsh.  In this file, there are two global variables and
+a shader function called Ripple.  Ripple takes a float2 as input
+(for X and Z of the vertex), and outputs two float4 representing
+the screen-space position and vertex color.  The Y coordinate is
+generated using this formula:
+<P>
+<TABLE BGCOLOR=#EEEEEE BORDER=0 CELLPADDING=5 CELLSPACING=5>
+<TR>
+<TD>
+<CODE>
+Y = 0.1 * sin( 15 * L * sin(T) );<BR>
+</CODE>
+</TD>
+</TR>
+</TABLE>
+<P>
+L is the distance between the vertex and the origin before the
+Y adjustment, so it has the value of sqrt( X² + Z² ), because
+the vertices are lying on the XZ plane.  T is the fTime global
+variable.
+<P>
+The color of the vertex will be some shade of gray based on this
+formula:
+<P>
+<TABLE BGCOLOR=#EEEEEE BORDER=0 CELLPADDING=5 CELLSPACING=5>
+<TR>
+<TD>
+<CODE>
+C = 0.5 - 0.5 * cos( 15 * L * sin(T) );<BR>
+</CODE>
+</TD>
+</TR>
+</TABLE>
+<P>
+C will be the value used for all red, green, blue, and alpha, and
+will range from 0 to 1, giving the vertex a color of black to white,
+respectively. The result looks like ripples with width changing back
+and forth between narrow and wide, and are properly shaded based on
+the slope.
+<P>
+
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

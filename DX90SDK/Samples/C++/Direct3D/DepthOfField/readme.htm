@@ -1,0 +1,230 @@
+<HTML>
+<HEAD>
+<TITLE>DepthOfField Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+DepthOfField Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="DepthOfField.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample shows several techniques for creating a depth-of-field effect in
+which objects are only in focus at a given distance from the camera, and are out
+of focus at other distances.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\DepthOfField</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin\DepthOfField.exe</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Why is this sample interesting?</FONT><BR> 
+Rendering objects out of focus adds realism to the scene.  The methods it shows
+are reasonably cheap to perform on most hardware, and the depth of field post
+processing can easily be combined with other post process techniques such as
+image based motion blur or HDR lighting.  
+<P>
+<FONT CLASS="h2">How does this sample work?</FONT><BR> 
+In CMyD3DApplication::InitDeviceObjects() it loads the geometry with
+D3DXLoadMeshFromX() and calls D3DXComputeNormals() to create mesh normals if
+there aren't any.  It then calls OptimizeInplace() to optimize the mesh for the
+vertex cache. It then loads the textures using D3DXCreateTextureFromFile().
+<P>
+<L>
+In CMyD3DApplication::RestoreDeviceObjects() it does the following:
+<UL>
+<LI>It setups the camera class.  The camera class encapsulates handling mouse and
+keyboard input and updating the view matrix accordingly.
+<LI>It then calls D3DXCreateTexture() to create a D3DUSAGE_RENDERTARGET
+A8R8G8B8 texture with the same height & width as the back buffer.  If that
+fails, it tries again but without the D3DUSAGE_RENDERTARGET flag. 
+<LI>It creates a ID3DXRenderToSurface* with D3DXCreateRenderToSurface() to help
+render to the texture on cards that don't support render targets. 
+<LI>It loads the D3DX effect file into a ID3DXEffect* and it caches the D3DXHANDLE
+to all the parameters that it'll set every frame. 
+<LI>It initialize effect parameters that don't change every frame such as the
+material properties and render target texture using ID3DXEffect::SetVector() and
+ID3DXEffect::SetTexture().
+<LI>It finds the first valid technique in the effect for the current Direct3D
+device.
+<LI>It creates a quad of vertices to be used in the post-processing pass.  The
+quad has 6 sets of texture coords defined.  Each set of texture coordinate it
+slightly shifted so when they are used in post process pixel shader effect will
+be a blur.  Note that entire set of texture coords aren't used in every
+technique.  How this quad is used will be explained below in more detail.
+<LI>It scales the effect's kernel "TwelveKernelBase" from pixel space (where 1.0
+means 1 pixel) to texture coordinate space and stores the result into a separate
+array labeled "TwelveKernel"
+</UL>
+<P>
+In CMyD3DApplication::FrameMove() it simply calls FrameMove() on the camera
+class so it can move the view matrix according the user input over time.
+<P>
+In CMyD3DApplication::Render() is essentially doing 2 things:
+<OL>
+<LI>It first renders the scene into a render target while it simultaneously
+calculates the blur factor and stores this in the alpha channel of the
+render target.  An alpha value of 0 means that pixel is not blurry while an
+alpha value of 1 means that that pixel is blurry.
+<LI>It then uses this render target with depth information stored in the alpha
+channel and renders a full screen quad to execute a pixel shader for each pixel
+in final surface. 
+</OL>
+<P>
+In more detail, the first part of CMyD3DApplication::Render() uses the technique
+"WorldWithBlurFactor" which has uses the vs_1_1 vertex shader called
+"WorldVertexShader".  This vertex shader transforms vertex position into screen
+space, performs a simple N dot L lighting equation, copies texture coordinates,
+and computes the blur factor based on the depth.  The blur factor is calculated
+with these equations:  
+<P>
+<TABLE BGCOLOR=#EEEEEE BORDER=0 CELLPADDING=5 CELLSPACING=5>
+<TR>
+<TD>
+<CODE>
+fBlurFactor = dot(float4(vViewPosition, 1.0), vFocalPlane)*fHyperfocalDistance;<BR>
+Output.Diffuse.a = fBlurFactor*fBlurFactor;
+</CODE>
+</TD>
+</TR>
+</TABLE>
+<P>
+This equation calculates the distances from a point to a plane and 
+scale the result by some factor.  The hyperfocal distance is a factor that is the distance 
+from clear to blurry.  The blur factor is then squared and capped at 0.75f so that the 
+center pixel is always weighted in the blurred image which reduces artifacts. 
+<P>
+The technique "WorldWithBlurFactor" then uses a ps_1_1 pixel shader called
+"WorldPixelShader" which simply modulates the diffuse vertex color with the
+mesh's texture color.  This could be done in FF pipeline if desired.
+<P>
+The second part of CMyD3DApplication::Render() is where the blur actually
+happens.  It uses one of five techniques to show off essentially 2 different
+pixel shader blur techniques. 
+<P>
+The techniques "UsePS20ThirteenLookups" and "UsePS20SevenLookups" both use the 	
+ps_2_0 pixel shader called "DepthOfFieldManySamples" (but compile it using
+different parameters).  The pixel shader is fairly simple: for a fixed number of
+samples it uses an array of values, called "TwelveKernel", to offset the
+original UV texture coords and calls tex2D() with this new UV on a texture which
+is the render target created above.  The kernel is defined to be two hexagons:
+one a single pixel out and the other two pixels out with close to "equal"
+spacing between the points in order to get the best blurring.  For each sample
+it keeps a running sum of the color with this equation:
+<P>
+<TABLE BGCOLOR=#EEEEEE BORDER=0 CELLPADDING=5 CELLSPACING=5>
+<TR>
+<TD>
+<CODE>
+Blurred += lerp(Original.rgb, Current.rgb, saturate(Original.a*Current.a));
+</CODE>
+</TD>
+</TR>
+</TABLE>
+<P>
+After all the samples have been taken, it returns this color divided by number
+of samples.
+<P>
+The other techniques "UsePS20SixTexcoords", "UsePS11FourTexcoordsNoRings", and
+"UsePS11FourTexcoordsWithRings" all are similar.  Unlike the above, they don't
+use a kernel to offset the texture coordinates but instead use separate sets of
+texture coords that are precomputed.  These texture coordinates are created in
+the application function called CMyD3DApplication::SetupQuad() and each set is
+offset to create a blur when used in a very similar way as done above in
+"DepthOfFieldManySamples".  The advantage to this method is that it can be done
+with ps_1_1 hardware.
+<P>
+The difference between "UsePS11FourTexcoordsNoRings", and "UsePS11FourTexcoordsWithRings" 
+is that the rings version lerps between the center pixel's RGB and the 3 jitter 
+pixel's RGB based on the alpha value (the blur factor) of the center pixel.  If one 
+of the jitter pixels is not blurry while center pixel is blurry then jitter pixel is incorrectly averaged in.  
+However, the "no rings" version lerps between the center pixel's RGB and the 3 jitter pixel's RGB based 
+on the value of center pixel's alpha * the jitter pixel alpha.  Since 0 means no blur, this means that if one 
+of the jitter pixels is not blurry while center pixel is blurry then 0*1=0 so that jitter pixel is not averaged 
+in causing a better result without artifacts.
+<P>
+For example, here is an original unblurred scene: 
+<P>
+<IMG SRC="doc/original.jpg">
+<P>
+By pressing "I" the sample will visually show you the blur factor of the scene.  White means that pixel is not blurry (alpha=0.0f), and black means that pixel is blurry (alpha=1.0f).
+<P>
+<IMG SRC="doc/blurfactor.jpg">
+<P>
+Here's what the final scene looks like:
+<P>
+<IMG SRC="doc/blurred.jpg">
+<P>
+
+
+<!-- FOOTER - DO NOT MODIFY --> 
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

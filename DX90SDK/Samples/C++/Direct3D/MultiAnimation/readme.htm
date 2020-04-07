@@ -1,0 +1,559 @@
+<HTML>
+<HEAD>
+<TITLE>MultiAnimation Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.h3 { font-family: arial; font-size: 12px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+MultiAnimation Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="MultiAnimation.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample demonstrates mesh animation with multiple animation sets using HLSL skinning and
+D3DX's animation controller.  The animation controller blends animation sets together to ensure
+a smooth transition when moving from one animation to another.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\MultiAnimation</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin\MultiAnimation.exe</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">User's Guide</FONT><BR> 
+<TABLE STYLE="border: 1px solid black" WIDTH="100%" BGCOLOR="#F5F5F5" CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<B>General controls defined in the sample:</B>
+<P>
+<TABLE CLASS="p" CELLSPACING=2 CELLPADDING=2 BORDER=0>
+<TR BGCOLOR=#DDDDDD>
+<TD><B>Key</B></TD>
+<TD><B>Action</B></TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Q</TD>
+<TD>Add instance</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>N</TD>
+<TD>Next view</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>P</TD>
+<TD>Previous view</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>R</TD>
+<TD>Reset camera</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>I</TD>
+<TD>Reset time</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>T</TD>
+<TD>Toggle behavior text</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>F2</TD>
+<TD>Change device</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Esc</TD>
+<TD>Quit</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>V</TD>
+<TD>Relinquish control for all mesh instances</TD>
+</TR>
+<TR>
+<TD COLSPAN=2>
+<BR>
+<B>These controls are valid when you are viewing a specific mesh instance:</B><P>
+</TD>
+</TR>
+<TR BGCOLOR=#DDDDDD>
+<TD><B>Key</B></TD>
+<TD><B>Action</B></TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>C</TD>
+<TD>Take control</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>W</TD>
+<TD>Move forward</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>A,D</TD>
+<TD>Turn</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Spacebar</TD>
+<TD>Hold for run mode</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Sample Overview</FONT><BR>
+
+MultiAnimation shows how an application can render 3D animation utilizing D3DX's
+animation support.  D3DX has APIs 
+that handles the loading of the animatable mesh,
+as well as the blending of multiple animations.  The animation controller supports
+animation tracks for this purpose, and allows transitioning from one animation to
+another smoothly.  The sample is divided into two parts: the animation class library
+and the application.
+<P>
+The animation class library is a general-purpose library that sits between the
+application and D3DX.  It encapsulates the details of loading the mesh from an
+.X file and manipulating its frame hierarchy to prepare it for rendering, as well
+as rendering the animated mesh using a vertex shader and a matrix palette for
+indexed skinning.  It is 
+designed to be reusable and customizable.
+<P>
+The application portion contains code specific only to this sample.  It
+uses the animation class library to create instances of Tiny, which are animated
+according to the action they perform.  Each instance can be controlled by either
+the user or the sample.  This portion also handles collision detection among
+instances of Tiny, out of bound detection, and behavior management for instances
+that are controlled by the sample.
+
+<BR clear="left">
+<BR clear="left">
+
+<FONT CLASS="h2">The Application</FONT><BR>
+
+The application portion of this sample consists of two parts. The first part is the
+CTiny class.  It handles the behavior of the animated mesh in the sample loaded from
+Tiny_4anim.x.  It is worth noting that the CTiny class is written specifically for
+the Tiny_4anim.x mesh file.  If a different mesh is used, a different class should be
+written for it, as CTiny will not work with any other meshes.  The second part contains
+CMyD3DApplication and all of the code that is normally generated by the DirectX
+application wizard.
+<P>
+In this sample, Tiny can be controlled by either the user or the application
+(default). When Tiny is controlled by the application, the following happens: we
+first find a random location on the floor and determine a move speed (run or walk).
+Then, we turn and move Tiny from the current position to the new destination.
+After Tiny arrives to the new destination, there is a brief period of idle time.
+After that has passed, we pick another location for Tiny to move to, and the whole
+process repeats. There can be more than one instance of Tiny.  Collision detection
+is done for the instances, so they can block each other's movement.
+<P>
+The CTiny class has a <A HREF="#CAnimInstance">CAnimInstance</A> member,
+a class defined by the animation library.  CTiny uses this member and its
+animation controller to perform the animation tasks necessary.  In this sample,
+Tiny has three sets of animation: Loiter, Walk, and Run.  The animation
+controller of Tiny supports two animation tracks.  Most of
+the time, one of these two tracks is active with an animation set.  When
+Tiny's action calls for a change of animation (for instance, going from
+loitering to walking, or stopping from running), we enable the second track
+with the new animation set to play and set a transition period to complete
+the transition from the first track to the second in.  Then, as we advance
+time, the animation controller will generate the correct frame matrices
+that reflect the transition smoothly by interpolating between the two tracks.
+After the transition period passes, the first track is disabled, and the
+second track plays the new animation we see Tiny in.
+<P>
+CTiny also takes advantage of the callback system to play the footstep
+sound at appropriate instances in the animation.  At initialization time,
+CTiny sets up a structure, CallbackDataTiny, containing the data to pass
+to the callback handler.  The structure has three members.  m_dwFoot
+indicates which foot is triggering the sound; m_pvCameraPos points to
+the camera position when the callback is made; m_pvTinyPos points to
+the world space coordinates of Tiny.  This data is used to determine
+which sound to play (left or right), and how loud it should be.  The
+sample defines a class called CBHandlerTiny, derived from
+ID3DXAnimationCallbackHandler, that contains the callback handler
+function to be called by the animation controller.  In the callback
+handler function, HandleCallback(), we retrieve the data passed to
+us as a CallbackDataTiny structure.  We then play a DirectSound buffer
+with the appropriate volume based on the values in the CallbackDataTiny
+structure.
+<P>
+In FrameMove(), the sample iterates through the array of CTiny instances
+and calls Animate() on each one of them.  This updates the behaviors of
+all instances, changing them if needed.  
+<P>
+The rendering code of the application is relatively simple.  
+It first sets up the view and projection matrices based on the camera position
+and orientation, then it renders the mesh object representing the
+floor.  Next, it goes through the array of Tiny instances and calls
+AdvanceTime() and Draw() on each one of them.  AdvanceTime() makes
+the animation controller update the frame hierarchy's matrices,
+then Draw() renders the instance using the updated matrices.  Finally,
+the code renders the informational text as necessary.
+<P>
+
+<FONT CLASS="h2">The Animation Class Library</FONT><BR>
+
+The library consists of the following structures and classes:
+<UL>
+<LI><A HREF="#CMultiAnim">CMultiAnim</A>
+<LI><A HREF="#CAnimInstance">CAnimInstance</A>
+<LI><A HREF="#CMultiAnimAllocateHierarchy">CMultiAnimAllocateHierarchy</A>
+<LI><A HREF="#MultiAnimFrame">MultiAnimFrame</A>
+<LI><A HREF="#MultiAnimMC">MultiAnimMC</A>
+</UL>
+
+<A NAME="CMultiAnim"></A>
+<FONT CLASS="h3">CMultiAnim</FONT><BR>
+
+This class is the heart of the library. Its function is to encapsulate the mesh hierarchy
+loaded from a .X file. It can also create instances of the animating mesh, of the type
+CAnimInstance, that share the mesh hierarchy from the .X file. These instances are
+associated with the CMultiAnim object that creates them.
+<P>
+In its initialization method, CMultiAnim::Setup(), CMultiAnim determines the maximum
+size of the matrix palette based on the version of the vertex shader present. It then
+loads the mesh hierarchy from the given .X file, and creates an effect object from the
+given .fx file that contains the vertex shader with which the mesh is rendered. The
+frames of the mesh hierarchy and the animation controller are created in this process.
+<P>
+The frames consist of a tree structure representing the hierarchy of the bones,
+as well as the mesh objects. This structure is shared by all associated instances.
+<P>
+The animation controller is associated with the mesh hierarchy frames. The animation
+controller that CMultiAnim holds is not used for animation. Instead, when a
+new animation instance is created, the animation controller is cloned, and the
+new animation controller is owned by the new instance. The application uses
+an instance's own animation controller to control its animation. Because each instance
+has its own copy of animation controller, it can animate independent of all other
+instances.
+<P>
+When the AdvanceTime() method of an animation controller in an animation instance
+is called, the animation controller will update the transformation matrix for
+each frame in the mesh hierarchy. The frames are then used in the rendering
+of the instance.
+<P>
+
+<A NAME="CAnimInstance"></A>
+<FONT CLASS="h3">CAnimInstance</FONT><BR>
+
+This class represents an animation entity, or an animation instance. Each
+animation instance has its own animation controller, which allows the
+instances to be animated independent of each other.  Each instance is
+also associated with a CMultiAnim object, which holds the mesh hierarchy
+that is shared by all associated instances.  The following methods are
+the most interesting for animation control and are used by the application
+extensively when animating and rendering.
+<P>
+<TABLE CLASS="p" CELLSPACING=2 CELLPADDING=2 BORDER=0>
+<TR BGCOLOR=#DDDDDD>
+<TD>Name</TD>
+<TD>Description</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>GetAnimController</TD>
+<TD>Returns the animation controller for this instance, of the type ID3DXAnimationController.
+With the animation controller, the application can set the animation it needs to play.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>SetWorldTransform</TD>
+<TD>Sets the top level world transformation matrix for this instance. When the animation
+time advances, each frame in the mesh hierarchy is recursively transformed by this world
+transformation to bring it to the correct world space coordinate and orientation.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>AdvanceTime</TD>
+<TD>Advances the local animation time for this instance with an optional callback handler. 
+The time advancement causes the animation controller to update the bone positions for
+this instance. The animation controller will also invoke the callback handler if the
+keyed event is reached.
+</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>ResetTime</TD>
+<TD>Resets the local time for this instance.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>Draw</TD>
+<TD>Renders this instance with the HLSL vertex shader. This is normally called
+after calling AdvanceTime() so that the frames are set up properly for rendering.</TD>
+</TR>
+</TABLE>
+<BR>
+
+When an animation instance is rendered, it uses the effect object of its
+associated CMultiAnim to set the rendering parameters, including the vertex
+shader.  The vertex shader function is responsible for skinning the mesh,
+transforming the position to screen space, and computing the color.
+The skinning portion is done by the function VS_Skin.  This function
+is located in the vertex shader file Skin.vsh.  The file contains an
+array of float4x3 named amPalette, which represents the matrix palette
+for skinning meshes, and the VS_Skin skinning function.  VS_Skin is designed
+to be invoked by another vertex shader function, so an application can call it
+in its own vertex shader function to handle the skinning process.  VS_Skin
+takes the object space position and normal, up to three blending weights (the last
+blending weight is computed by subtracting the sum of all other weights from 1),
+and up to four indices for the matrix palette.  Then it transforms the position
+and normal up to four times with the corresponding matrices in the matrix
+palette and blending weights, and adds the result together to form the
+world space position and normal.
+<P>
+
+<A NAME="CMultiAnimAllocateHierarchy"></A>
+<FONT CLASS="h3">CMultiAnimAllocateHierarchy</FONT><BR>
+
+This class inherits from ID3DXAllocateHierarchy. Its function is to handle the allocation and
+deallocation of resources during the loading and releasing of a mesh hierarchy. In
+this sample, CMultiAnimAllocateHierarchy initializes all members of new frames and mesh
+containers in CreateFrame() and CreateMeshContainer(), called during the mesh hierarchy
+creation.  In DestroyFrame() and DestroyMeshContainer(), it frees up all resources
+allocated in CreateFrame() and CreateMeshContainer(), respectively.
+<P>
+CreateMeshContainer() does a little more work than simply allocating and copying. It has to:
+<UL>
+<LI>Create all of the textures used by the mesh.
+<LI>Initialize the mesh container's bone offset array, given by pSkinInfo.
+<LI>Obtain the palette size that the mesh has to work with, and call ConvertToIndexedBlendedMesh()
+    to create a working mesh that is compatible with the palette size.
+</UL>
+
+<A NAME="MultiAnimFrame"></A>
+<FONT CLASS="h3">MultiAnimFrame</FONT><BR>
+
+This structure is derived from D3DXFRAME. It represents a single frame, or bone,
+in a mesh hierarchy.  A frame may contain siblings or children.  The entire
+mesh hierarchy is structured similar to a tree. The application can add members
+to a structure derived from D3DXFRAME as necessary.  In this sample, no
+additional members are needed.<P>
+
+<A NAME="MultiAnimMC"></A>
+<FONT CLASS="h3">MultiAnimMC</FONT><BR>
+
+This structure is derived from D3DXMESHCONTAINER. It contains a mesh object
+attached to the mesh hierarchy along with relevant data for the mesh. A mesh
+hierarchy can contain any number of mesh containers.  In this sample,
+additional members are defined:<P>
+
+<TABLE CLASS="p" CELLSPACING=2 CELLPADDING=2 BORDER=0>
+<TR BGCOLOR=#DDDDDD>
+<TD>Type</TD>
+<TD>Name</TD>
+<TD>Description</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>LPDIRECT3DTEXTURE9*</TD>
+<TD>m_apTextures</TD>
+<TD>Array of D3D texture objects used by the mesh</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>LPD3DXMESH</TD>
+<TD>m_pWorkingMesh</TD>
+<TD>A copy of the mesh compatible with the matrix palette size available</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>D3DXMATRIX *</TD>
+<TD>m_amxBoneOffsets</TD>
+<TD>Array of matrices representing the bone offsets. This information is obtained from
+the pSkinInfo member, copied here for convenience.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>D3DXMATRIX **</TD>
+<TD>m_apmxBonePointers</TD>
+<TD>Array of pointers to matrix. They point to the TransformationMatrix of various frames
+of this mesh hierarchy. We used this array to provide an easy mapping from bone index
+to bone matrix.</TD>
+<TR BGCOLOR=#F5F5F5>
+<TD>DWORD</TD>
+<TD>m_dwNumPaletteEntries</TD>
+<TD>The size of the matrix palette that this mesh uses when rendering. This size is
+bound by two things. It cannot exceed the maximum palette size allowed by our vertex
+shader due to limited registers, and it also cannot be larger than the number of
+bones this mesh has.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>DWORD</TD>
+<TD>m_dwMaxNumFaceInfls</TD>
+<TD>Maximum number of bones that may affect a single face. This value is obtained from
+ConvertToIndexedBlendedMesh().  The vertex shader needs this value when rendering in order
+to know when to compute the last weight.</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>DWORD</TD>
+<TD>m_dwNumAttrGroups</TD>
+<TD>Number of attribute groups that the working mesh has. An attribute group is a
+subset of the mesh that can be drawn in a single draw call.  If the working palette
+size is not large enough to render the mesh in its entirety, it needs to be broken
+down into separate attribute groups.  This is done by ConvertToIndexedBlendedMesh().</TD>
+</TR>
+<TR BGCOLOR=#F5F5F5>
+<TD>LPD3DXBUFFER</TD>
+<TD>m_pBufBoneCombos</TD>
+<TD>This contains the bone combination table, in the form of an array of D3DXBONECOMBINATION.
+There is one D3DXBONECOMBINATION for each attribute group. It identifies the subset of the
+mesh (vertices, faces, and bones) that can be drawn in a single draw call.</TD>
+</TR>
+</TR>
+</TABLE>
+<BR>
+
+<FONT CLASS="h2">Pitfalls and Alternatives</FONT><BR>
+
+Some of the things that this sample does can be done differently,
+with different trade-offs.
+<P>
+Because all instances of Tiny
+share the same frame hierarchy matrices, the sample must advance
+time on a specific instance and render it before moving on to
+another instance.  Generally, this does not present a problem.
+However, if an application wishes to update the matrices for
+all of the instances first then render them, it can make new
+animation controllers point to a different set of matrices
+when cloning.  This way, each animation controller has its own
+set of matrices to work with, and overwriting will not occur,
+at the expense of more memory usage.
+<P>
+It's also worth noting that the matrix palette in the skinning
+vertex shader is an array of matrices, and naturally takes
+up a significant number of constant registers.  An application
+may experience the problem of insufficient constant registers
+for other use.  The application can work with a smaller sized
+matrix palette by setting the MATRIX_PALETTE_SIZE_DEFAULT shader
+#define to a smaller value when creating the effect object in
+CMultiAnim. The drawback of this approach is that the mesh may
+contain more subsets that need to be drawn separately.
+<P>
+Note that this sample specifically demonstrates rendering
+animated meshes.  It does not handle static meshes, although
+the code can be extended to do that.
+<P>
+Another task that the sample only does partially is the complete preservation
+of animation controllers' states when the Direct3D device is released
+and re-created.  This generally happens when the application switches
+from HAL to REF device, or vice versa, or from one 3D device to the other on a
+dual-monitor system.  In MultiAnimation, when the Direct3D device
+is released, all animation controllers are also released.  The
+animation controllers are then re-created when the sample initializes
+the new Direct3D device.  This presents a problem, because animation
+states stored in animation controllers are lost.  The sample loses the
+knowledge of what animation each track is playing, what tracks are
+enabled, and speed and weight of each track before the old device
+is released.  To remedy this issue, an application should, before
+releasing Direct3D objects in its cleanup function (DeleteDeviceObjects
+for MultiAnimation), retrieve the animation controllers' states
+and save them in a buffer.  Then, after it re-creates the animation
+controllers that it needs (in InitDeviceObjects), it should restore the
+animation controllers' states from the buffer.
+
+For each animation controller, the states that should be saved are:
+
+<UL>
+<LI>Current time of the animation controller, obtained with
+ID3DXAnimationController::GetTime().
+<LI>Name of the animation set that each track is playing.  Obtain this
+information by calling ID3DXAnimationController::GetTrackAnimationSet(),
+then ID3DXAnimationSet::GetName().
+<LI>Track description of all tracks.  Use
+ID3DXAnimationController::GetTrackDesc() to obtain this.
+<LI>Current events for all tracks, if there are events running.  This can be
+retrieved with ID3DXAnimationController::GetCurrentTrackEvent() and
+ID3DXAnimationController::GetEventDesc().
+<LI>All keyed track events.  To receive every event keyed,
+first call ID3DXAnimationController::GetUpcomingTrackEvent()
+with hEvent set to NULL.  This returns an event handle to the 
+keyed event
+to happen next.  Then, pass the handle to DXAnimationController::GetEventDesc()
+to obtain the description for this event.  After that, take the handle received
+from the previous ID3DXAnimationController::GetUpcomingTrackEvent() call
+and call ID3DXAnimationController::GetUpcomingTrackEvent() again with it.
+This gives you the handle to the second keyed event.  Repeat this process
+to receive all keyed events.
+<LI>Current priority blend for the animation controller, by calling
+ID3DXAnimationController::GetPriorityBlend().
+<LI>Current priotity blend event, if one is running, by calling
+ID3DXAnimationController::GetCurrentPriorityBlend() and 
+ID3DXAnimationController::GetEventDesc().
+<LI>All keyed priority blend events.  This is done by calling
+ID3DXAnimationController::GetUpcomingPriorityBlend() and
+ID3DXAnimationController::GetEventDesc().  The way to handle all events
+is similar to handling keyed events in the tracks.
+</UL>
+For simplicity reason, MultiAnimation does not preserve all of its animation
+controllers' states.  The only thing that it saves is the animation set that its
+current track is playing.  Consequently, if the Direct3D device object is released
+and re-created during an animation transition, the animation will not look exactly
+the same after re-initialization as it does before.  It will look as if the transition
+has been completed.  In addition, all keyed events will not be restored after
+re-initialization.
+
+<BR>
+<BR>
+
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

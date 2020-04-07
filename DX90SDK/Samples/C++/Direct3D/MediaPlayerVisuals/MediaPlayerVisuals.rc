@@ -1,0 +1,188 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""iMediaPlayerVisuals.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "MediaPlayerVisuals\0"
+            VALUE "FileDescription", "MediaPlayerVisuals Module\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "MediaPlayerVisuals\0"
+            VALUE "LegalCopyright", "Copyright © 2001-2001\0"
+            VALUE "OriginalFilename", "MediaPlayerVisuals.dll\0"
+            VALUE "ProductName", "MediaPlayerVisuals Module\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "OLESelfRegister", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_MEDIAPLAYERVISUALS       REGISTRY DISCARDABLE    "MediaPlayerVisuals.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PROPERTYDIALOG DIALOG DISCARDABLE  0, 0, 170, 75
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MediaPlayerVisuals Properties"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,109,51,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,49,51,50,14
+    LTEXT           "Text displayed in plugin window:",IDC_STATIC,8,8,137,8
+    EDITTEXT        IDC_MESSAGEEDIT,18,21,141,14,ES_AUTOHSCROLL
+END
+
+IDD_BARS DIALOG DISCARDABLE  0, 0, 186, 90
+STYLE WS_CHILD | WS_CAPTION
+CAPTION "Bars"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Bar Width",IDC_STATIC,26,17,32,8
+    EDITTEXT        IDC_BAR_WIDTH,65,15,28,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Spin2",IDC_BAR_WIDTH_SPIN,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
+                    UDS_ARROWKEYS,93,14,11,12
+    LTEXT           "Bar Spacing",IDC_STATIC,18,35,40,8
+    EDITTEXT        IDC_BAR_SPACING,65,33,28,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Spin2",IDC_BAR_SPACING_SPIN,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
+                    UDS_ARROWKEYS,93,32,11,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Data
+//
+
+IDR_CUBEFACE            RCDATA  DISCARDABLE     "cubeface.bin"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_BARS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "MediaPlayerVisuals"
+    IDS_EFFECTNAME          "Microsoft Direct3D"
+    IDS_BARSPRESETNAME      "MediaPlayerVisuals Plugin Bars"
+    IDS_SCOPEPRESETNAME     "MediaPlayerVisuals Plugin Wave"
+    IDS_DESCRIPTION         "A collection of effects using Microsoft Direct3D acceleration"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "iMediaPlayerVisuals.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

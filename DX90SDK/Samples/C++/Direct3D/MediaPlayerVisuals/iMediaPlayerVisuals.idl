@@ -1,0 +1,40 @@
+// iMediaPlayerVisuals.idl : IDL source for MediaPlayerVisuals.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (iMediaPlayerVisuals.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(0B37273F-E1BC-43a2-93D9-5A5FB7D19823),
+		dual,
+		helpstring("IMediaPlayerVisuals Interface"),
+		pointer_default(unique)
+	]
+	interface IMediaPlayerVisuals : IDispatch
+	{
+		[propget, id(1), helpstring("property foregroundColor")] HRESULT foregroundColor([out, retval] BSTR *pVal);
+		[propput, id(1), helpstring("property foregroundColor")] HRESULT foregroundColor([in] BSTR newVal);
+	};
+
+[
+	uuid(AAF6A9E4-0BCD-461e-B084-7FC094A1BD1E),
+	version(1.0),
+	helpstring("MediaPlayerVisuals 1.0 Type Library")
+]
+library MediaPlayerVisualsLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(D03FEA00-6DE4-4992-9594-CE0F3306A1E4),
+		helpstring("MediaPlayerVisuals Class")
+	]
+	coclass MediaPlayerVisuals
+	{
+		[default] interface IMediaPlayerVisuals;
+	};
+};

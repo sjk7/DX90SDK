@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<TITLE>HDRCubeMap Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.h3 { font-family: arial; font-size: 12px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+HDRCubeMap Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="HDRCubeMap.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+
+This sample demonstrates cubic environment-mapping with floating-point
+textures and high dynamic range lighting. In DirectX 9.0, floating-point
+formats have become available for textures.  These formats
+can store color values higher than 1.0, which can make lighting effects
+more realistic on the environment-mapped mesh when the material absorbs
+part of the light.
+<P>
+Note that not all cards support all features for the
+environment-mapping and high dynamic range lighting techniques.
+<P>
+
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\HDRCubeMap</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">User's Guide</FONT><BR> 
+<TABLE STYLE="border: 1px solid black" WIDTH="100%" BGCOLOR="#F5F5F5" CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<B>General controls defined in the sample:</B>
+<P>
+<TABLE CLASS="p" CELLSPACING=2 CELLPADDING=2 BORDER=0>
+<TR BGCOLOR=#DDDDDD>
+<TD><B>Key</B></TD>
+<TD><B>Action</B></TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>E, D</TD>
+<TD>Adjust material reflectivity</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>W, S</TD>
+<TD>Adjust light intensity</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>F</TD>
+<TD>Change cubic map format</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>R</TD>
+<TD>Reset lighting parameters</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>F2</TD>
+<TD>Change device</TD>
+</TR>
+<TR BGCOLOR=#FFFFFF>
+<TD>Esc</TD>
+<TD>Quit</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Sample Overview</FONT><BR>
+
+HDRCubeMap shows off two rendering techniques: cubic environment-mapping and
+high dynamic range lighting.  Cubic environment-mapping is a technique in which
+the environment surrounding a 3D object are rendered into a cube texture map,
+so that the object can use the cube map to achieve complex lighting effects
+without expensive lighting calculations.  High dynamic range lighting is a
+technique to render highly realistic lighting effects by using floating-point
+textures and high-intensity lights.  The floating-point texture formats are
+introduced in DirectX 9.0.  Unlike traditional textures in integer
+format, floating-point textures are capable of storing a wide
+range of color values.  Because color values in floating-point
+textures don't get clamped to [0, 1], much like lights in real-world,
+these textures can be used to achieve greater realism.
+<P>
+The scene that HDRCubeMap renders is an environment-mapped mesh, along
+with several other objects making up the environment around the mesh.  The mesh
+has a reflectivity setting adjustable from 0 to 1, where 0 means the mesh absorbs
+light completely, and 1 means it absorbs no light and reflects all.  The lights
+used in the scene consist of four point lights, whose intensity is adjustable
+by the user.
+
+<BR clear="left">
+<BR clear="left">
+
+<FONT CLASS="h2">Implementation</FONT><BR>
+
+HDRCubeMap follows the DirectX sample framework architecture.  A CMyD3DApplication
+class, derived from CD3DApplication, does most of the work in the sample.
+<P>
+The scene that the sample renders consists of these objects:
+
+<UL>
+<LI>A room mesh. This includes the walls, floor, and ceiling.
+<LI>Four small sphere meshes representing light sources.
+<LI>A mesh in the center of the room with the environment map applied to it.
+<LI>Two bi-plane meshes. These orbit around the environment-mapped
+    mesh and are reflected on the environment map.  They give the
+    visual cue that the environment map is dynamic, and changes
+    as the surrounding environment changes.
+</UL>
+
+When the sample loads, it creates two cubic textures, one in A8R8G8B8 format
+and the other in A16B16G16R16F format.  When rendering, the sample uses one
+of these to construct an environment map based on the user's choice.  This
+is done to show the visual difference between integer and floating-point
+textures when used with high dynamic range lighting.  A stencil surface with
+a size equal to the size of a cube texture face is also created at this time.
+This stencil surface will be used as the stencil buffer when the sample
+renders the scene onto the cube texture.  The sample also creates an
+effect object that contains all of the shaders and techniques needed
+for rendering the scene.
+<P>
+The camera used in the sample is a CModelViewerCamera.  This camera always looks
+at the origin, where the environment-mapped mesh is.  The user can move the
+camera position around the mesh and rotate the mesh with mouse control.  The
+camera object computes the view and projection matrices for rendering, as
+well as the world matrix for the environment-mapped mesh.
+<P>
+
+<FONT CLASS="h3">The Rendering Code</FONT><BR>
+
+The rendering of the sample happens in three functions:
+RenderSceneIntoCubeMap(), Render(), and RenderScene(), using vertex
+and pixel shaders.
+<P>
+RenderScene() is the function that does the actual work of rendering
+the scene onto the current render target.  This is called both to render the
+scene onto the cube texture and onto the device backbuffer.  It takes
+three parameters: a view matrix, a projection matrix, and a flag
+indicating whether it should render the environment-mapped mesh.
+The flag is needed because the environment-mapped mesh is not drawn
+when constructing the environment map.  The rest of the function
+is straight-forward.  It first updates the effect object with the
+latest transformation matrices, as well as the light position in
+view space.  Then, it renders every mesh object in the scene by
+using an appropriate technique for each one.
+<P>
+RenderSceneIntoCubeMap()'s job is rendering the entire scene (minus
+the environment-mapped mesh) onto the cube texture.  First, it saves the
+current render target and stencil buffer, and sets the stencil surface
+for the cube texture as the device stencil buffer.  Next, the function
+iterates through the six faces of the cube texture.  For each face,
+it sets the appropriate face surface as the render target.  Then,
+it computes the view matrix to use for that particular face, with the
+camera at the origin looking out in the direction of the cube face.
+It then calls RenderScene() with bRenderEnvMappedMesh set to false,
+passing along the computed view matrix and a special projection matrix.
+This projection matrix has a 90 degree field of view and an aspect
+ratio of 1, since the render target is a square.  After this process
+is complete for all six faces, the function restores the old render
+target and stencil buffer.  The environment map is now fully constructed
+for the frame.
+<P>
+Render() is the top level rendering function called once per frame by
+the sample framework.  It first calls FrameMove() for the camera object,
+so that the matrices managed by the camera can be updated.  Next, it
+calls RenderSceneIntoCubeMap() to construct the cube texture to
+reflect the environment for that frame.  After that, it renders
+the scene by calling RenderScene() with the view and projection matrices
+from the camera, and bRenderEnvMappedMesh set to true.
+<P>
+
+<FONT CLASS="h3">The Shaders</FONT><BR>
+
+All of the rendering in this sample are done by programmable shaders,
+divided into three effect techniques: RenderLight, RenderHDREnvMap,
+and RenderScene.
+<P>
+The RenderLight technique is used for rendering the spheres representing
+the light sources.  The vertex shader does a usual world-view-projection
+transformation, then assigns the light intensity value to the output
+diffuse.  The pixel shader propagates the diffuse to the pipeline.
+<P>
+The RenderHDREnvMap technique is used for rendering the
+environment-mapped mesh in the scene.  Besides transforming the position
+from object space to screen space, the vertex shader computes the eye
+reflection vector (the reflection of the eye-to-vertex vector) in
+view space.  This vector is passed to the pixel shader as a cubic texture
+coordinate.  The pixel shader samples the cube texture, applies
+the reflectivity to the sampled value, and returns the
+result to the pipeline.
+<P>
+The RenderScene technique is used to render everything else.
+Objects rendered by this technique employ per-pixel diffuse lighting.
+The vertex shader transforms the position from object to screen
+space.  Then, it computes the vertex position and normal in
+view space and passes them to the pixel shader as texture coordinates.
+The pixel shader uses this information to perform per-pixel lighting.
+A for-loop is used to compute the amount of light received from the four
+light sources.  The diffuse term of the pixel is computed by taking the
+dot product of the normal and the unit vector from the pixel to the
+light.  The attenuation term is computed as the reciprocal of the
+square of the distance between the pixel and the light.  These two terms
+are then modulated to represent the amount of light the pixel receives from
+one of the light sources.  Once this process is done for all lights in the
+scene, the values are summed and modulated with the light intensity
+and the texel to form the output.
+<P>
+
+<FONT CLASS="h2">High Dynamic Range Realism</FONT><BR>
+
+Prior to DirectX 9.0, only integer texture formats are supported by
+Direct3D.  When a texture of this type is used, if a color value is
+higher than 1.0, it is clamped to 1.0 before being written so
+that the value can fit in an 8-bit integer.  This means that
+when the cube texture is written, its texel color values will
+have a maximum of 1.0.  When this texture is later used for
+environment-mapping on a material that is not 100% reflective (say,
+only 30% reflective), even the brightest texels in the texture
+will end up showing at 0.3 on the mesh, regardless of how
+high the original light intensity is.  Consequently, realism
+is compromised.  This is demonstrated in the figure below.
+<P>
+<IMG SRC="doc/WithoutHDR.jpg">
+<P>
+When DirectX 9.0's new floating-point cube texture is used
+with lights whose intensity is higher than 1, the texture
+is capable of storing color values higher than
+1.0, thus preserving true luminance even after the
+reflectivity multiplication.  The figure below shows this.
+<P>
+<IMG SRC="doc/WithHDR.jpg">
+<P>
+
+<FONT CLASS="h2">Alternatives</FONT><BR>
+
+It is possible to achieve a high level of realism in a high
+dynamic range lighting environment without using floating-point
+cube textures.  An application can accomplish this by applying
+the material reflectivity multiplier when constructing the cubic
+environment map.  Then, during rendering, the pixel shader will
+sample the cube texture and output the value straight back to
+the pipeline.  This method works around color-clamping by
+scaling before the clamping instead of after.  The drawback of
+this method is that if the scene has multiple environment-mapped
+objects with different reflectivity, a different environment map
+will generally need to be rendered for each of these objects.
+<P>
+
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

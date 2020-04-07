@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<TITLE>PixelMotionBlur Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align:
+super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold;
+color: white }
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0
+CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+PixelMotionBlur Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20
+src="PixelMotionBlur.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample shows how to do a post process motion blur effect using floating
+point textures, shaders and multiple render targets.  The first pass renders the
+scene's color to the first render target and writes the velocity of each pixel to the second render target.  It then does a post process pass using a pixel shader to blur the pixel based on the pixel's velocity.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart"
+BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\PixelMotionBlur</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart"
+BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin\PixelMotionBlur.exe</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Why is this sample interesting?</FONT><BR>
+Motion blur adds realism to the scene.  It has the perceptual effect of creating
+high speed motion. Instead of rendering the geometry multiple times with
+different alpha values to create a blur effect, this sample shows off a realistic image based motion blur effect.  While the scene is rendered, the shaders record the per-pixel velocity relative to the previous frame.  This per-pixel velocity is then used in a post process pass to blur the pixels in the final image.
+<P>
+<FONT CLASS="h2">How does this sample work?</FONT><BR>
+In CMyD3DApplication::InitDeviceObjects() it loads the geometry with
+D3DXLoadMeshFromX() and calls D3DXComputeNormals() to create mesh normals if
+there aren't any. It then calls OptimizeInplace() to optimize the mesh for the
+vertex cache. It then loads the textures using D3DXCreateTextureFromFile().  It also sets up the 
+structures to describe the scenes and sets up the camera.
+<P>
+In CMyD3DApplication::RestoreDeviceObjects() it does the following: 
+<UL>
+<LI>It uses D3DXCreateTexture() to create a D3DFMT_A8R8G8B8 render target that is the same size as the back buffer.  This render target will be used by the pixel shader to render the scene's RGB color.
+<LI>It uses D3DXCreateTexture() to create 2 more render targets that are the same size as the back buffer but these are floating point 16 bits per channel, D3DFMT_G16R16F.  These textures are used by the pixel shader to render the pixel's velocity.  One of these textures will hold the per-pixel velocity of the previous frame and the other will hold the per-pixel velocity of the current frame.  The usage of these render targets are explained in more detail below.
+<LI>It uses D3DXCreateEffectFromFile() to load the D3DX effect file into a ID3DXEffect* and it caches the D3DXHANDLE to all the parameters that it'll use every frame. 
+<LI>It creates a quad of vertices to be used in the post-processing pass.  The
+quad has a single set of texture coordinates defined.  These texture coordinates are setup so that the texels of the render target will map directly to pixels.  How this quad is used is explained in more detail below.
+<LI>It also clears all of the render targets and sets some ID3DXEffect parameters to default values.
+</UL>
+<P>
+In CMyD3DApplication::FrameMove() it does the following:  
+<UL>
+<LI>Calls FrameMove() on the camera class so it can move the view matrix according the user input over time.
+<LI>It swaps the pointers of the current frame's per-pixel velocity texture and the last frame's per-pixel velocity texture.  Why we need to keep the last frame's per-pixel velocity is explained below.
+<LI>It animates the objects in the scene based on a simple function of time.
+<LI>It calls Sleep() based on a user's setting.  This simulates time spent doing complex graphics, AI, physics, networking, etc.  This is useful in this sample to slow down the frame rate and thus have more motion between each frame.
+</UL>
+<P>In CMyD3DApplication::Render() is essentially doing 2 things:
+<OL>
+<LI>It first renders the scene's RGB into 1 render target, m_pFullScreenRenderTargetSurf while it simultaneously renders the pixel's velocity into a 2nd render target, m_pCurFrameVelocitySurf.  This is only possible if the device caps report NumSimultaneousRTs > 1, otherwise this will need to done in 2 passes.
+<LI>It then does a post process pass.  It renders a full screen quad to execute a pixel shader for each pixel.  The pixel shader uses the render target with velocity information to blur the color of the pixel using a filter based on the direction of pixel's velocity.
+</OL>
+<P>
+<P>In more detail, the first part of CMyD3DApplication::Render() uses the technique "WorldWithVelocity" which has uses a vs_2_0 vertex shader called "WorldVertexShader".  This vertex shader transforms vertex position into screen
+space, performs a simple N dot L lighting equation, copies texture coordinates,
+and computes the velocity of the vertex by transforming the vertex by both the current and previous world * view * projection matrix and taking the difference.  The difference will be the amount that this vertex has moved in screen space since last frame.  This per-vertex velocity is passed to the pixel shader via TEXCOORD1. 
+<P>The technique "WorldWithVelocity" then uses a ps_2_0 pixel shader called
+"WorldPixelShader" which modulates the diffuse vertex color with the
+mesh's texture color and outputs this to COLOR0 and also outputs the velocity of the pixel per frame in COLOR1.  The render target for COLOR1 is D3DFMT_G16R16F, a floating point 16 bits per channel texture.  In this render target, it records the amount the pixel has moved in screen space since last frame in the X direction the red channel has, and the Y delta in the green channel. The interpolation from per-vertex velocity to per-pixel velocity is done automatically since the velocity is passed to the pixel shader via a texture coord.
+<P>
+The second part of CMyD3DApplication::Render() is where the motion blur actually
+happens.  It uses the technique called "PostProcessMotionBlur" to do the post process motion blur. 
+<P>
+The technique "PostProcessMotionBlur" uses a ps_2_0 pixel shader called "PostProcessMotionBlurPS".  This pixel shader does 2 texture lookups to get the per-pixel velocity of the current frame (from CurFrameVelocityTexture) and the last frame (from LastFrameVelocityTexture).  If it just used the current frame's pixel velocity, then it wouldn't blur where the object was last frame because the current velocity at those pixels would be 0.  Instead you could do a filter to find if any neighbors have a non-zero velocity, but that requires a lot of texture lookups which are limited and also may not work if the object moved too far.  So instead the shader uses either the current velocity or the last frames velocity.  It chooses based on the one with greatest magnitude.  
+<P>
+Once it has chosen the value to use as the pixel's velocity, it samples 12 times along the direction of the pixel's velocity.  While sampling, it accumulates the color and divides by the number of samples to get the average color of all the samples and outputs this as the final color for that pixel.
+<P>
+<P>
+For example, here is an original unblurred scene: 
+<P>
+<IMG SRC="doc/without-blur.jpg">
+<P>
+And here's what a blurred scene looks like:
+<P>
+<IMG SRC="doc/with-blur.jpg">
+<P>
+<FONT CLASS="h2">What are the pitfalls of this technique?</FONT><BR>
+Since the final post process pixel shader is blurring the whole scene at once without knowledge of object edges, artifacts will arise if objects are occluded since the blur kernel from one object will sample color from another object another nearby.  For example:
+<P>
+<IMG SRC="doc/occulde.jpg">
+<P>
+Also if the pixels in an object have moved too far since the last frame then it will be noticable:
+<P>
+<IMG SRC="doc/diverge.jpg">
+<P>
+To correct this, you can either increase the framerate so that the pixels do not move as far between frames or reduce the blur factor.
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="RGBFilters">
+      <UniqueIdentifier>{933a7b9f-953f-442a-8419-96ba9438c0fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AlphaRenderer">
+      <UniqueIdentifier>{5509ea03-75e3-4ed7-9238-80509e1a44bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RateSource">
+      <UniqueIdentifier>{b122ee43-fc6f-4a21-b913-79570aef5b84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AlphaSource">
+      <UniqueIdentifier>{9b40d404-f4e2-4b23-ad43-3f9e4bcd8f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source8Bit">
+      <UniqueIdentifier>{577443b4-7ff3-4248-ae75-049ed19055a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source555">
+      <UniqueIdentifier>{7c232dd5-99ef-47c4-bd5c-269f75f87d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source565">
+      <UniqueIdentifier>{cf8bf66c-7f02-4c90-ab56-de03c4d9f815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source24">
+      <UniqueIdentifier>{ad7b5c0f-5919-446c-8c3a-8b43f5ddf3a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source32Bit">
+      <UniqueIdentifier>{c662f236-04b3-42fa-a8d9-19b0eee18644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TransNulls">
+      <UniqueIdentifier>{a1469557-4159-4595-895f-aacdf72ee1e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TransSmpte">
+      <UniqueIdentifier>{4dcf8f47-fa2f-48db-b6df-3b38ed36bdda}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RGBFilters.cpp">
+      <Filter>RGBFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="setup.cpp">
+      <Filter>RGBFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>RGBFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaRenderer\AlphaRenderer.cpp">
+      <Filter>AlphaRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ratesource\ratesource.cpp">
+      <Filter>RateSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ratesource\ratestream.cpp">
+      <Filter>RateSource</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaSource\AlphaSource.cpp">
+      <Filter>AlphaSource</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaSource\AlphaStream.cpp">
+      <Filter>AlphaSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Source8Bit\Source8Bit.cpp">
+      <Filter>Source8Bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Source8Bit\Source8BitStream.cpp">
+      <Filter>Source8Bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Source555\Source555.cpp">
+      <Filter>Source555</Filter>
+    </ClCompile>
+    <ClCompile Include="Source555\Source555stream.cpp">
+      <Filter>Source555</Filter>
+    </ClCompile>
+    <ClCompile Include="Source565\Source565.cpp">
+      <Filter>Source565</Filter>
+    </ClCompile>
+    <ClCompile Include="Source565\Source565stream.cpp">
+      <Filter>Source565</Filter>
+    </ClCompile>
+    <ClCompile Include="Source24\Source24.cpp">
+      <Filter>Source24</Filter>
+    </ClCompile>
+    <ClCompile Include="Source24\Source24stream.cpp">
+      <Filter>Source24</Filter>
+    </ClCompile>
+    <ClCompile Include="Source32\Source32.cpp">
+      <Filter>Source32Bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Source32\Source32stream.cpp">
+      <Filter>Source32Bit</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull24.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull32.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull32a.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull555.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull565.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransNulls\TransNull8.cpp">
+      <Filter>TransNulls</Filter>
+    </ClCompile>
+    <ClCompile Include="TransSmpte\TransSmpte.cpp">
+      <Filter>TransSmpte</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="RGBFilters.idl">
+      <Filter>RGBFilters</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StdAfx.h">
+      <Filter>RGBFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaRenderer\AlphaRenderer.h">
+      <Filter>AlphaRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ratesource\ratesource.h">
+      <Filter>RateSource</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaSource\AlphaSource.h">
+      <Filter>AlphaSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Source8Bit\Source8Bit.h">
+      <Filter>Source8Bit</Filter>
+    </ClInclude>
+    <ClInclude Include="Source555\Source555.h">
+      <Filter>Source555</Filter>
+    </ClInclude>
+    <ClInclude Include="Source565\Source565.h">
+      <Filter>Source565</Filter>
+    </ClInclude>
+    <ClInclude Include="Source24\Source24.h">
+      <Filter>Source24</Filter>
+    </ClInclude>
+    <ClInclude Include="Source32\Source32.h">
+      <Filter>Source32Bit</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull24.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull32.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull32a.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull555.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull565.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransNulls\TransNull8.h">
+      <Filter>TransNulls</Filter>
+    </ClInclude>
+    <ClInclude Include="TransSmpte\TransSmpte.h">
+      <Filter>TransSmpte</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="RGBFilters.def">
+      <Filter>RGBFilters</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

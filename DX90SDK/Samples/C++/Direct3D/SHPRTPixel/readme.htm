@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>SHPRTPixel Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+SHPRTPixel Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="SHPRTPixel.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+Similar to the SHPRTVertex sample, this sample demonstrates how use D3DXSHPRTSimulationTex(), a per texel precomputed radiance transfer (PRT) simulator that uses low-order spherical harmonics (SH) and records the results to a file. The sample then demonstrates how compress the results with principal component analysis (PCA) and views the compressed results with arbitrary lighting in real time with a ps_2_0 pixel shader.
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\SHPRTPixel</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin\SHPRTPixel.exe</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<BR CLEAR="left">
+<BR CLEAR="left">
+
+<FONT CLASS="h2">Why is this sample interesting?</FONT><BR> 
+Precomputed radiance transfer (PRT) using low-order spherical harmonic (SH) basis functions has a number of advantages over typical diffuse (N dot L) lighting. Area light sources and global effects such as inter-reflections, soft shadows, self shadowing, and subsurface scattering can be rendered in real time after a precomputed light transport simulation. Principal component analysis (PCA) allows the results of per-texel simulator to be compressed so the shader does not need as many constants or per texel data.  
+<P>
+<FONT CLASS="h2">Overview of PRT</FONT><BR> 
+The basic idea is to first run a PRT simulator offline as part of the art content creation process and save the compressed results for later real-time use. The PRT simulator models global effects that would typically be very difficult to do in real-time. The real-time engine approximates the lights using SH basis functions and sums the approximated light vectors into a single set of SH basis coefficients describing a low frequency approximation for the entire lighting environment. It then uses a pixel shader to arrive at the pixel's diffuse color by combining the compressed simulator results and the approximated lighting environment. Since the offline simulator did the work of computing the inter-reflections, soft shadows, etc this technique is visually impressive and high performing.
+<P>
+<FONT CLASS="h2">How does the sample work?</FONT><BR> 
+The sample performs both the offline and real time portions of PRT.  The startup dialog box asks the user which step to perform.  The user can run the offline simulator or view a mesh using previously saved results from the PRT simulator.  The offline step would typically be done in a separate tool, but this sample does both in same executable.
+<P> 
+<FONT CLASS="h2">How does this sample differ from SHPRTVertex sample?</FONT><BR> 
+Unlike the SHPRTVertex sample, this sample stores the PCA weights in textures instead of in the vertex stream.  Also only a single cluster can be used with the per-texel data, so the cluster ID isn't needed since every texel is part of the same cluster.
+<P>
+<B>Step 1: Offline</B><BR>
+The first step is to run the offline per texel PRT simulator in the function D3DXSHPRTSimulationTex(). It takes in a number of parameters to control the operation of the simulator, a mesh, and a D3DXSHMATERIAL structure. Note that mesh is assumed to be homogenous. The simulator's input parameters and the members of SH material structure are explained extensively by the sample dialog's tooltips. Note that if you pass in more than one mesh they need to be pre-translated into the same coordinate space. 
+<P>
+Fortunately most of the simulator input parameters do not affect how the results are used. In particular one parameter that does affect how to use the results is the "order of SH approximation" parameter. This controls what order of SH basis functions are used to approximate transferred radiance. The explanation of the math behind spherical harmonics is rather involved, but there are a number of useful resources available on the Internet. For example, "Precomputed Radiance Transfer for Real-Time Rendering in Dynamic, Low-Frequency Lighting Environments" by Peter-Pike Sloan, Jan Kautz, and John Snyder, SIGGRAPH 2002 is a good explanation of PRT and for a more graphics developer friendly introduction to spherical harmonics see "Spherical Harmonic Lighting: The Gritty Details" by Robin Green, GDC 2003.  
+<P>
+In addition to the order parameter, the spectral parameter also affects the results. If spectral is on, that means there will be 3 color channels - red, green, and blue. However sometimes it's useful to work just with one channel (shadows for example). Note that with non-spectral you simply use the red channel when calling the D3DX SH functions as the other channels are optional. 
+<P>
+The simulator runs for some period of time (minutes) depending on the complexity of the meshes, the number of rays, and other settings. The output is an ID3DXBuffer which contains an internal header and an array of floats for each texel of the mesh. 
+<P>
+The floats for each texel are called radiance transfer vectors. These transfer vectors <I>can</I> be used by a shader to transform source radiance into exit radiance. However, since there are order^2 number of transfer coefficients per channel, that means that with spectral and order 6 there would be 3*36 or 108 scalars per texel. Fortunately, you can compress this using an algorithm called PCA. The number of coefficients per texel will be reduced to the number of PCA vectors, and this number does not need to be large for good results.  For example, 4 or 8 usually yields good results. So, for example, with 8 PCA vectors and order 6 then instead of 108 coefficients per texel we will only need 8 coefficients per texel. The number of PCA vectors must be less than the order^2. For more detail about the math behind PCA, see "Clustered Principal Components for Precomputed Radiance Transfer" by Peter-Pike Sloan, Jesse Hall, John Hart, and John Snyder, SIGGRAPH 2003.  Note that with per-texel PRT, clustering does not apply so the number of clusters is simply 1.
+<P>
+<B>Step 2: Real time</B><BR>
+The equation to render compressed PRT data is : 
+<P>
+<DD><IMG SRC="doc/eq1.png"></DD>
+<P>
+Note: to see how this equation is derived from a generic rendering equation, see the DirectX documentation.
+<P>
+where: 
+<UL>
+<LI><B>R<SUB>p</SUB></B> is a single channel of exit radiance at texel p and is evaluated at every texel.
+<LI><B>M<SUB>k</SUB></B> is the mean for cluster k. A cluster is simply some number of vertices that share the same mean vector, however for the per texel PRT the number of clusters must be 1. This is an order^2 vector of coefficients
+<LI><B>k</B> is the cluster ID for texel p
+<LI><B>L'</B> is the approximation of the source radiance into the SH basis functions.  This is an order^2 vector of coefficients
+<LI><B>j</B> sums over the number of PCA vectors 
+<LI><B>N</B> is the number of PCA vectors 
+<LI><B>w<SUB>pj</SUB></B> is the jth PCA weight for point p.  This is a single coefficient.
+<LI><B>B<SUB>kj</SUB></B> is the jth PCA basis vector for cluster k.  This is an order^2 vector of coefficients
+</UL>
+<P>
+For the real time step, the sample simply collects all of the data needed for this equation and passes the appropriate data to a pixel shader that implements this equation.
+<P>
+<FONT CLASS="h2">How to implement the equation</FONT><BR> 
+Now lets look at the details of how the sample collects, stores, and uses the data to execute the above equation in the pixel shader.
+<P>
+First the sample reads the simulator's SH PRT results from a file, and puts this data back into an ID3DXBuffer. Then in CMyD3DApplication::CompressData(), it calls D3DXSHPRTCompress() to apply CPCA using some number of PCA vectors and some number of clusters. The output is an ID3DXBuffer (called pPCABuffer) that contains the data needed for CPCA formula above.  Note that this sample loads and saves an uncompressed SH PRT buffer, however it would be more efficient to compress then save the textures to it does not have to be done upon init.  The sample doesn't do this since it allows the developer to select the number of PCA vectors and texture format without running the simulator again.
+<P>
+Next the sample calls D3DXSHPRTCompNormalizeData() on the compressed buffer.  This changes the PCA weights so that they are always between 0 and 1 which is imprtant for non-floating point texture formats.  It also modifies the PCA mean and basis vectors to compensate.  The application requires no changes, this just guarantees maximum precision when using signed normalized texture formats. 
+<P>
+Then the sample creates (m_dwNumPCAVectors/4) number of textures and places 4 PCA weights in each texture with by calling D3DXSHPRTCompExtractTexture().  It also sets up the texture sampler to trilinear filtering.  Note that filtering the PCA weights is works well and is even mathematically correct to do. 
+<P>
+As the equation shows, to calculate the exit radiance in the shader you'll need not only per texel compressed transfer vectors but also your lighting environment (also called source radiance) approximated using SH basis functions. D3DX provides a number of functions to help make this step easy: 
+<UL>
+<LI>D3DXSHEvalDirectionalLight()
+<LI>D3DXSHEvalSphericalLight()
+<LI>D3DXSHEvalConeLight()
+<LI>D3DXSHEvalHemisphereLight()
+<LI>D3DXSHProjectCubeMap()
+</UL>
+Just use one of these functions to get an array of order^2 floats per channel for each light. Then simply add these arrays together using D3DXSHAdd() to arrive at a single set of order^2 SH coefficients per channel that describe the scene's source radiance, which the equation labels as L'.  Note that these functions take the light direction in object space so you will typically have to transform the light's direction by the inverse of the world matrix.
+<P>
+The last piece of data the sample needs from pCPCABuffer is the cluster mean (M), and the PCA basis vectors (B). The sample stores this data in a large array of floats so that when the lights change it can reevaluate the lights and perform the M dot L and B dot L calculations. To do this it simple calls D3DXSHPRTCompExtractBasis() which extracts the basis a cluster at a time. Each cluster's basis is comprised of a mean and PCA basis vectors. So the size of an array, m_aClusterBases, needed to store all of the cluster bases is:
+<P>
+<DD>
+<CODE>
+NumClusters * (NumPCAVectors+1) * (order^2 * NumChannels)
+</CODE>
+</DD>
+<P>
+Note that the "+1" is to store the cluster mean.  Also note that since both (M<SUB>i</SUB> dot L') and (B<SUB>kj</SUB> dot L') are constant, the sample calculates these values on the CPU and passes them as constants into the pixel shader, and since w<SUB>pj</SUB> changes for each texel the sample store this per texel data in textures.
+<P>
+Finally, CMyD3DApplication::CompressData() calls another helper function CMyD3DApplication::EvalLightsAndSetConstants() which evaluates the lights as described above using D3DXSHEvalDirectionalLight() and D3DXSHAdd() and calls CMyD3DApplication::SetShaderConstants(). This function uses the m_aClusterBases array and the source radiance to perform the M dot L' and B dot L' calculations as described in the above equation and stores the result into another smaller float array, m_fClusteredPCA, of size:
+<P>
+<DD>
+<CODE>
+NumClusters * (4 + MaxNumChannels * NumPCAVectors)
+</CODE>
+</DD>
+<P>
+This array is passed directly to the pixel shader with ID3DXEffect::SetFloatArray(). Note that the pixel shader uses float4 since each register can hold 4 floats, so on the pixel shader side the array is of size:
+<P>
+<DD>
+<CODE>
+NumClusters * (1 + MaxNumChannels * (NumPCAVectors / 4) )
+</CODE>
+</DD>
+<P>
+Since we restrict MaxNumPCAVectors to a multiple of 4, this results in an integer. Also note that evaluating the lights, calculating and setting the constant table is fast enough to be done per frame, but for optimization purposes the sample only calls this when the lights are moved. 
+<P>
+Now that the sample has extracted all the data it needs, the sample can render the scene using SH PRT with PCA. The render loop uses the SHPRTPixel.fx technique called "PrecomputedSHLighting" and renders the scene. This technique uses a pixel shader called "SHPRTDiffusePS" which implements the exit radiance formula above. 
+<P>
+<FONT CLASS="h2">What are the limitations of per-texel PRT?</FONT><BR> 
+The per-texel PRT requires hardware that supports ps_2_0 or higher.
+<P>
+There are limitations of PRT since the transfer vectors are precomputed.  The relative spatial relationship of the precomputed scene can not change.  In other words, a mesh can be rotated, translated, or scaled since those rigid operations do not change the transfer vectors, but if the mesh is deformed or skinned then the results will be inaccurate.  The same logic also applies for scenes.  For example, if you pass a scene of 3 meshes to the simulator the real time engine could rotation, translate, scale them all as one, but could not rotate a single mesh independent of the others without getting inaccurate results.  
+<P>
+Since this sample operates on a texel level it is not dependent on the mesh being tessellated, however it does require a unique texture parameterization which means that every point on the surface must map to unique point on the texture. In other words there can be no overlap in the texture space. 
+<P>
+As a side note, since this technique uses low order spherical harmonics the lighting environment is assumed to be low frequency.  
+<P>
+Also note that if you mix meshes that have subsurface scattering with ones that do not then you will likely need to scale the transfer coefficients for the subsurface scattered mesh since they are around 3x darker.  With a single mesh you can simply scale the projected light coefficients.  You can scale that transfer coefficients by using D3DXSHPRTGetRawDataPointer() and scaling before compressing the data.
+<!-- FOOTER - DO NOT MODIFY --> 
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>

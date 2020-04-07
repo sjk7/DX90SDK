@@ -1,0 +1,53 @@
+Rendered Scene pane controls
+====================================================
+    Left click and drag to spin the object.
+    Middle click and drag to zoom the object in/out.
+    Right click and drag to pan the object.
+    Hold Ctrl and left click and drag to spin the camera around the object.
+    Hold Ctrl and middle click and drag to zoom the camera in and out.
+    Hold Ctrl and right click and drag to pan the camera.
+    Reposition lights by left click and dragging them to a new location.
+    Click the "Reset Camera" button to reset the object and the camera.
+
+Compilation results pane controls
+====================================================
+    Double-click on errors to jump to the offending line
+
+EffectEdit Parameter Semantics and Annotations
+====================================================
+    Note that not all effect files will work well with EffectEdit.  Effects
+    that need a lot of parameters to be set by the app will probably not work
+    well.  EffectEdit will recognize a limited number of parameters that have 
+    these semantic attached:
+
+        Parameters with the WORLD semantic will contain the world matrix
+        Parameters with the VIEW semantic will contain the view matrix
+        Parameters with the PROJECTION semantic will contain the projection matrix
+        Parameters with the WORLDVIEW semantic will contain the world*view matrix
+        Parameters with the VIEWPROJECTION semantic will contain the view*projection 
+            matrix
+        Parameters with the WORLDVIEWPROJECTION semantic will contain the 
+            world*view*projection matrix
+        Parameters with the NAME annotation will cause a texture with the given 
+            name to be loaded
+        Parameters with the FUNCTION annotation will cause a procedural texture 
+            with the given name to be loaded and used to initialize the texture
+        Parameters with the TARGET annotation will cause the procedural texture 
+            to use the specified instruction set (Default is "tx_1_0")
+        Parameters with the WIDTH annotation will cause the texture to have the
+            specified width
+        Parameters with the HEIGHT annotation will cause the texture to have the
+            specified height
+        An integer parameter named "BCLR" will be used to define the background 
+            color of the scene
+        A string parameter named "BIMG" will be used to define a background image 
+            for the scene
+        A string parameter named "XFile" will be used to load an XFile containing 
+            the object to be rendered
+        A float parameter with the TIME semantic will contain the app time, in seconds 
+        A vector parameter with the CAMERAPOSITION semantic will contain the 
+            camera position, in world space
+
+    For example, loading an .fx file with:
+        float4x4 MyWorld  : WORLD;
+    would tell EffectEdit that the "MyWorld" parameter is the world matrix.

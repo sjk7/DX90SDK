@@ -1,0 +1,41 @@
+HKCR
+{
+    NoRemove CLSID
+    {
+        ForceRemove {D03FEA00-6DE4-4992-9594-CE0F3306A1E4} = s 'MediaPlayerVisuals Class'
+        {
+            InprocServer32 = s '%MODULE%'
+            {
+                val ThreadingModel = s 'Apartment'
+            }
+            'TypeLib' = s '{AAF6A9E4-0BCD-461e-B084-7FC094A1BD1E}'
+        }
+    }
+}
+HKEY_LOCAL_MACHINE
+{
+    NoRemove SOFTWARE
+    {
+        NoRemove Microsoft
+        {
+            NoRemove MediaPlayer
+            {
+                NoRemove Objects
+                {
+                    NoRemove Effects
+                    {
+                        ForceRemove MediaPlayerVisuals
+                        {
+                            Properties
+                            {
+                                val classid = s '{D03FEA00-6DE4-4992-9594-CE0F3306A1E4}'
+                                val name = s 'res://MediaPlayerVisuals.dll/RT_STRING/#101'
+                                val description = s 'res://MediaPlayerVisuals.dll/RT_STRING/#105'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+; MediaPlayerVisuals.def : Declares the module parameters.
+
+LIBRARY      "MediaPlayerVisuals.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

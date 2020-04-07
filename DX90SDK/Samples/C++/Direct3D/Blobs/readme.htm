@@ -1,0 +1,252 @@
+<HTML>
+    <HEAD>
+        <TITLE>Blobs Direct3D Sample</TITLE>
+        <STYLE TYPE="text/css"> 
+        .h1 { font-family: tahoma; font-weight: bold; font-size: 130%; }
+	.h2 { font-family: arial; font-weight: bold; vertical-align: super; }
+	.p { font-family: arial; font-size: 80%; }
+	.header { padding: 3px; font-family: tahoma; font-weight: bold; color: white }
+	.chart { font-family: monospace; font-size: 75%; }
+	</STYLE>
+    </HEAD>
+    <BODY bgColor="#ffffff" MARGINHEIGHT="2" TOPMARGIN="2" LEFTMARGIN="2" RIGHTMARGIN="2">
+        <!-- HEADER - DO NOT MODIFY -->
+        <TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+                <TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER="0"></TD>
+                <TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER="0"></TD>
+            </TR>
+        </TABLE>
+        <!-- END HEADER -->
+        <!-- MASTER TABLE - DO NOT MODIFY -->
+        <TABLE WIDTH="100%" BORDER="0" CELLPADDING="20">
+            <TR>
+                <TD CLASS="p">
+                    <!-- END MASTER TABLE -->
+                    <FONT CLASS="h1">
+                        <!-- INSERT SAMPLE NAME --> Blobs Sample 
+                        <!-- END SAMPLE NAME -->
+                    </FONT>
+                    <HR>
+                    <TABLE WIDTH="100%" BGCOLOR="#ffffff" BORDER="0" CELLPADDING="10" CELLSPACING="0">
+                        <TR>
+                            <TD CLASS="p">
+                                <BR CLEAR="left">
+                                <IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace="20" src="blobs.jpg" align="left" vspace="10">
+                                <FONT CLASS="h2">Description</FONT><BR>
+                                <!-- INSERT SAMPLE DESCRIPTION --> 
+This sample mimics a metaball effect in screen space using a pixel shader.
+   True metaball techniques deform surfaces according to pushing or pulling
+   modifiers, and are commonly used to model liquid effects like the merging
+   of water droplets; however, metaball effects can be computationally
+   expensive, and this sample shows how to fake a 3D metaball effect in 2D
+   image space using a pixel shader.
+                                <!-- END SAMPLE DESCRIPTION -->
+                                <BR CLEAR="left">
+                                <BR CLEAR="left">
+                            </TD>
+                        </TR>
+                    </TABLE>
+                    <HR>
+                    <BR CLEAR="left">
+                    <FONT CLASS="h2">Path</FONT>
+                    <TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="4" BORDER="0">
+                        <TR>
+                            <!-- PATH INFORMATION -->
+                            <TD CLASS="chart" BGCOLOR="#dddddd" ALIGN="right"><B>Source:</B></TD>
+                            <TD CLASS="chart" BGCOLOR="#eeeeee">DX90SDK\Samples\C++\Direct3D\Blobs</TD>
+                            <!-- END PATH INFORMATION -->
+                        </TR>
+                        <TR>
+                            <!-- PATH INFORMATION -->
+                            <TD CLASS="chart" BGCOLOR="#dddddd" ALIGN="right"><B>Executable:</B></TD>
+                            <TD CLASS="chart" BGCOLOR="#eeeeee">DX90SDK\Samples\C++\Direct3D\Bin\Blobs.exe</TD>
+                            <!-- END PATH INFORMATION -->
+                        </TR>
+                    </TABLE>
+                    <P>
+                        <BR CLEAR="left">
+                        <FONT CLASS="h2">Why is this sample interesting?</FONT><BR>
+Metaballs (also called Blinn blobs after James Blinn who formulated the technique) are included with most modeling software as an easy way to create smooth surfaces from a series of 'blobs' which merge together; the apparent flow between blobs makes the technique particularly well suited for particle systems which model liquids. <BR>
+<p>
+The underlying technique is based on isosurfaces, equations in 3-dimensions which define a closed volume. For instance, <b>x² + y² + z² = 1</b> defines a sphere of radius 1 centered at the origin. This idea extends to arbitrary 3D functions; given a continuous function, the set of all points along that function which are equal to an arbitrary constant value define an isosurface. Individual metaballs are often implemented as spheres defined by Gaussian distributions where the highest value exists at the sphere's center and all values above an arbitrary threshold are defined to be inside the sphere; this threshold is subtracted from the Gaussian height which yields a surface height of zero at the blob edge. Since the surface is completely defined according to this threshold, the values of overlapping spheres can be added to produce a new surface.  <i>Figure 1</i> shows the smooth curve which results from the addition of two Gaussian curves. <BR><BR>
+  
+<!-- IMAGE -->
+                                        <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/fig1.gif"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 1. Addition of Gaussian curves produces smooth blending</FONT></TD>
+                                            </TR>
+                                        </TABLE>
+                                        <!-- END IMAGE -->
+                    <P>
+For a true metaball effect, these calculations would be made in 3-dimensional space. Instead, this sample performs the computation in 2-dimensional screen space, which yields a nice visual effect requiring very little computational effort; however, you'll notice that accuracy is lost since blobs in the background will merge with blobs near the camera as they align along the view vector.
+<BR>
+                        <FONT CLASS="h2"></FONT>&nbsp;</P>
+                    <P><FONT class="h2">How does this sample work?</FONT><BR>
+The individual blobs are described according to world-space position, size, and color. Before each frame is rendered, <B>FrameMove()</B> animates the blob positions before calling <B>FillBlobVB()</B>, which projects each blob into screen-space and fills the vertex buffer with corresponding billboard quads. The vertex format of these billboards is shown below:<BR><BR>
+
+<TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="10" BORDER="0">
+<TR>
+<TD CLASS="chart" BGCOLOR="#eeeeee">
+<BR>
+<PRE>
+struct VS_OUTPUT
+{
+    float4 vPosition : POSITION;    // Screen-space position of the vertex
+    float2 tCurr     : TEXCOORD0;   // Texture coordinates for Gaussian sample
+    float2 tBack     : TEXCOORD1;   // Texture coordinates of vertex position on render target
+    float2 sInfo     : TEXCOORD2;   // Z-offset and blob size
+    float3 vColor    : TEXCOORD3;   // Blob color
+};
+</PRE>
+</TD>
+</TR>
+</TABLE>
+<BR>
+The coordinates stored in <B>tCurr</B> are used to sample a 2D Gaussian texture which defines the sphere. The coordinates stored in <B>tBack</B> are used to sample data from previously-rendered blobs, and could also be used to blend against a background texture. These pre-transformed vertices are handed directly to the <B>BlobBlenderPS</B> pixel shader:<BR><BR>
+<TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="10" BORDER="0">
+<TR>
+<TD CLASS="chart" BGCOLOR="#eeeeee">
+<BR>
+<PRE>
+PS_OUTPUT BlobBlenderPS( VS_OUTPUT Input )
+{ 
+    PS_OUTPUT Output;
+    float4 weight;
+   
+    // Get the new blob weight
+    DoLerp( Input.tCurr, weight );
+
+    // Get the old data
+    float4 oldsurfdata = tex2D( SurfaceBufferSampler, Input.tBack );
+    float4 oldmatdata  = tex2D( MatrixBufferSampler, Input.tBack );
+    
+    // Generate new surface data
+    float4 newsurfdata = float4((Input.tCurr.x-0.5) * Input.sInfo.y,
+                                (Input.tCurr.y-0.5) * Input.sInfo.y,
+                                0,
+                                1);
+    newsurfdata *= weight.r;
+    
+    // Generate new material properties
+    float4 newmatdata = float4(Input.vColor.r,
+                               Input.vColor.g,
+                               Input.vColor.b,
+                               0);
+    newmatdata *= weight.r;
+    
+    // Additive blending
+    Output.vColor[0] = newsurfdata + oldsurfdata; 
+    Output.vColor[1] = newmatdata + oldmatdata;
+
+    return Output;
+}
+</PRE>
+</TD>
+</TR>
+</TABLE>
+<BR>
+The <B>DoLerp</B> helper function performs a bilinear filtered texture sample; bilinear filtering of floating-point textures is typically not implemented directly by the graphics driver. Each blob billboard is rendered to a set of temporary textures, one to store accumulated color data and one to store accumulated surface normal data:<BR>
+<!-- IMAGE LIST -->
+                        <TABLE BORDER=0 WIDTH="100%" BGCOLOR="#ffffff" CELLPADDING="0" CELLSPACING="20" ID="Table1">
+                                <TR>
+                                    <TD CLASS="p">
+                                        <!-- IMAGE -->
+                                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table2">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/fig2.jpg"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 2. Surface normal buffer</FONT></TD>
+                                            </TR>
+                                        </TABLE>
+                                        <!-- END IMAGE -->
+                                    </TD>
+                                    <TD CLASS="p">
+                                        <!-- IMAGE -->
+                                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" ID="Table3">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/fig3.jpg"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 3. Color buffer</FONT></TD>
+                                            </TR>
+                                        </TABLE>
+				    </TD>
+                                    <!-- END IMAGE -->
+                                    <!-- SPACER -->
+                                    <TD WIDTH="100%">&nbsp;</TD>
+                                    <!-- END SPACER -->
+                                </TR>
+                                
+        </TABLE>
+        <!-- END IMAGE LIST -->
+ <BR>
+The blended normal and color data are used by the <B>BlobLightPS</B> pixel shader for a final lighting pass which samples into an environment map based on the averaged surface normal:<BR><BR>
+<TABLE STYLE="MARGIN-LEFT: -4px" CELLSPACING="4" CELLPADDING="10" BORDER="0">
+<TR>
+<TD CLASS="chart" BGCOLOR="#eeeeee">
+<BR>
+<PRE>
+float4 BlobLightPS( VS_OUTPUT Input ) : COLOR
+{
+    static const float aaval = THRESHOLD * 0.07f;
+
+    float4 blobdata = tex2D( SourceBlobSampler, Input.tCurr);
+    float4 color = tex2D( MatrixBufferSampler, Input.tCurr);
+    
+    color /= blobdata.w;
+    
+    float3 surfacept = float3(blobdata.x/blobdata.w,
+                              blobdata.y/blobdata.w, 
+                              blobdata.w-THRESHOLD); 
+    float3 thenorm = normalize(-surfacept);
+    thenorm.z = -thenorm.z;
+
+    float4 Output;  
+    Output.rgb = color.rgb + texCUBE( EnvMapSampler, thenorm );
+    Output.rgb *= saturate ((blobdata.a - THRESHOLD)/aaval);
+    Output.a=1;
+    
+    return Output;
+}
+</PRE>
+</TD>
+</TR>
+</TABLE>
+<BR>
+Which yields the final composite image:
+<BR>
+<!-- IMAGE -->
+                                        <TABLE CELLPADDING="0" CELLSPACING="20" BORDER="0" ID="Table2">
+					<TR>
+					<TD>
+					    <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+                                            <TR>
+                                                <TD VALIGN="bottom"><IMG SRC="doc/fig4.jpg"></TD>
+                                            </TR>
+                                            <TR>
+                                                <TD><FONT SIZE="1">Fig 4. Final scene</FONT></TD>
+                                            </TR>
+					    </TABLE>
+					</TD>
+					</TR>
+                                        </TABLE>
+                                        <!-- END IMAGE -->
+ 
+            <!-- FOOTER - DO NOT MODIFY -->
+            <BR clear="left">
+            <BR clear="left">
+            <BR clear="left">
+            <HR>
+            <CENTER>
+                Copyright (c) Microsoft Corporation. All rights reserved.
+            </CENTER>
+        <!-- END FOOTER -->
+        <!-- MASTER TABLE - DO NOT MODIFY --> </TD></TR></TBODY></TABLE> 
+        <!-- END MASTER TABLE -->
+    </BODY>
+</HTML>

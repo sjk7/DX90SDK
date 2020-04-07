@@ -1,0 +1,318 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define IDC_STATIC -1
+#include <windows.h>
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+1                       RT_MANIFEST             "SHIrradianceEnvMap.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAIN_ACCEL ACCELERATORS 
+BEGIN
+    VK_F2,          IDM_CHANGEDEVICE,       VIRTKEY, NOINVERT
+    VK_F9,          IDM_HELP,               VIRTKEY, NOINVERT
+    VK_ESCAPE,      IDM_EXIT,               VIRTKEY, NOINVERT
+    "X",            IDM_EXIT,               VIRTKEY, ALT, NOINVERT
+    VK_SPACE,       IDM_SINGLESTEP,         VIRTKEY, NOINVERT
+    VK_RETURN,      IDM_TOGGLEFULLSCREEN,   VIRTKEY, ALT, NOINVERT
+    VK_F1,          IDM_TOGGLEHELP,         VIRTKEY, NOINVERT
+    VK_RETURN,      IDM_TOGGLESTART,        VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SELECTDEVICE DIALOG  0, 0, 289, 321
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Direct3D Settings"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Adapter and device",IDC_STATIC,5,5,276,47
+    LTEXT           "Display &Adapter:",IDC_STATIC,16,17,98,10,
+                    SS_CENTERIMAGE
+    COMBOBOX        IDC_ADAPTER_COMBO,124,15,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Render &Device:",IDC_STATIC,16,34,98,10,SS_CENTERIMAGE
+    COMBOBOX        IDC_DEVICE_COMBO,124,32,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Display mode settings",IDC_STATIC,5,56,276,115
+    CONTROL         "&Windowed",IDC_WINDOW,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,16,68,98,15
+    CONTROL         "&Fullscreen",IDC_FULLSCREEN,"Button",BS_AUTORADIOBUTTON,
+                    16,99,98,15
+    LTEXT           "Adapter F&ormat:",IDC_STATIC,26,119,88,8
+    COMBOBOX        IDC_ADAPTERFORMAT_COMBO,124,117,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "&Resolution:",IDC_STATIC,26,136,88,8
+    COMBOBOX        IDC_RESOLUTION_COMBO,124,134,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "R&efresh Rate:",IDC_STATIC,26,153,88,8
+    COMBOBOX        IDC_REFRESHRATE_COMBO,124,151,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    GROUPBOX        "Device settings",IDC_STATIC,7,175,274,117
+    LTEXT           "&Back Buffer Format:",IDC_STATIC,24,190,90,8
+    COMBOBOX        IDC_BACKBUFFERFORMAT_COMBO,124,187,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "De&pth/Stencil Buffer Format:",IDC_STATIC,24,207,92,8
+    COMBOBOX        IDC_DEPTHSTENCILBUFFERFORMAT_COMBO,124,204,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Multisample Type:",IDC_STATIC,24,224,90,10,
+                    SS_CENTERIMAGE
+    COMBOBOX        IDC_MULTISAMPLE_COMBO,124,221,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Multisample &Quality:",IDC_STATIC,24,241,90,8
+    COMBOBOX        IDC_MULTISAMPLE_QUALITY_COMBO,124,238,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Vertex Processing:",IDC_STATIC,24,258,90,8
+    COMBOBOX        IDC_VERTEXPROCESSING_COMBO,124,255,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Present &Interval:",IDC_STATIC,24,275,90,8
+    COMBOBOX        IDC_PRESENTINTERVAL_COMBO,124,272,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,86,299,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,152,299,50,14
+    CONTROL         "Clip to device when the window spans across multiple monitors",
+                    IDC_DEVICECLIP_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,27,87,241,8
+END
+
+IDD_SIMULATION_OPTIONS DIALOGEX 0, 0, 281, 334
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | 
+    WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_STATICEDGE | WS_EX_APPWINDOW
+CAPTION "Precomputed Radiance Transfer"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "PRT settings",IDC_PRT_SETTINGS_TEXT,7,7,267,124,
+                    BS_NOTIFY
+    LTEXT           "Input mesh:",IDC_INPUT_MESH_TEXT,18,21,40,8,SS_NOTIFY
+    EDITTEXT        IDC_MESH_NAME,58,18,153,14,ES_AUTOHSCROLL | NOT 
+                    WS_TABSTOP
+    LTEXT           "Order of spherical harmonic approximation:",
+                    IDC_ORDER_TEXT,18,37,139,8,SS_NOTIFY
+    CONTROL         "",IDC_ORDER_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | 
+                    WS_TABSTOP,162,36,97,11
+    LTEXT           "Min: 2",IDC_STATIC,157,50,20,8
+    LTEXT           "Max: 6",IDC_STATIC,241,50,23,8
+    LTEXT           "Number of rays:",IDC_NUM_RAYS_TEXT,82,66,53,8,SS_NOTIFY
+    EDITTEXT        IDC_NUM_RAYS_EDIT,140,64,39,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_NUM_RAYS_SPIN,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | 
+                    UDS_NOTHOUSANDS,181,63,11,14
+    LTEXT           "Number of bounces:",IDC_NUM_BOUNCES_TEXT,69,83,66,8,
+                    SS_NOTIFY
+    EDITTEXT        IDC_NUM_BOUNCES_EDIT,140,81,39,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_NUM_BOUNCES_SPIN,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
+                    UDS_ARROWKEYS | UDS_NOTHOUSANDS,181,80,11,14
+    LTEXT           "Number of PCA vectors:",IDC_NUM_PCA_TEXT,57,100,78,8,
+                    SS_NOTIFY
+    COMBOBOX        IDC_PCA_VECTOR_COMBO,140,98,39,75,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Subsurface scattering",IDC_SUBSURF_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,28,116,86,10
+    CONTROL         "Spectral (3 color channels: RGB)",IDC_SPECTRAL_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,116,119,10
+    GROUPBOX        "Material settings",IDC_MATERIAL_SETTINGS_TEXT,7,135,267,
+                    120,BS_NOTIFY
+    LTEXT           "Predefined Material:",IDC_PREDEF_TEXT,67,151,66,8,
+                    SS_NOTIFY
+    COMBOBOX        IDC_PREDEF_COMBO,137,148,126,63,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Relative index of refraction:",IDC_REFRACTION_TEXT,41,
+                    169,91,8,SS_NOTIFY
+    EDITTEXT        IDC_REFRACTION_EDIT,137,167,39,12,ES_AUTOHSCROLL
+    LTEXT           "Red",IDC_RED_TEXT,149,188,14,8,SS_NOTIFY
+    LTEXT           "Green",IDC_GREEN_TEXT,190,188,20,8,SS_NOTIFY
+    LTEXT           "Blue",IDC_BLUE_TEXT,237,188,14,8,SS_NOTIFY
+    LTEXT           "Diffuse reflectance coefficient:",IDC_REFLECTANCE_TEXT,
+                    32,201,100,8,SS_NOTIFY
+    EDITTEXT        IDC_REFLECTANCE_R_EDIT,137,199,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_REFLECTANCE_G_EDIT,181,199,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_REFLECTANCE_B_EDIT,225,199,39,12,ES_AUTOHSCROLL
+    LTEXT           "Reduced scattering coefficient:",IDC_SCATTERING_TEXT,31,
+                    218,101,8,SS_NOTIFY
+    EDITTEXT        IDC_SCATTERING_R_EDIT,137,216,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCATTERING_G_EDIT,181,216,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCATTERING_B_EDIT,225,216,39,12,ES_AUTOHSCROLL
+    LTEXT           "Absorption coefficient:",IDC_ABSORPTION_TEXT,58,235,74,
+                    8,SS_NOTIFY
+    EDITTEXT        IDC_ABSORPTION_R_EDIT,137,233,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ABSORPTION_G_EDIT,181,233,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ABSORPTION_B_EDIT,225,233,39,12,ES_AUTOHSCROLL
+    GROUPBOX        "Output settings",IDC_OUTPUT_SETTINGS_TEXT,7,258,267,50,
+                    BS_NOTIFY
+    CONTROL         "Save output to file",IDC_SAVE_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,18,271,75,10
+    LTEXT           "Output file: ",IDC_OUTPUT_TEXT,18,287,40,8,SS_NOTIFY
+    EDITTEXT        IDC_OUTPUT_EDIT,58,285,153,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse",IDC_OUTPUT_BROWSE_BUTTON,214,285,50,14
+    DEFPUSHBUTTON   "&Go",IDOK,7,313,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,224,313,50,14
+    PUSHBUTTON      "&Browse",IDC_INPUT_BROWSE_BUTTON,214,18,50,14
+END
+
+IDD_STARTUP DIALOGEX 0, 0, 302, 201
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Precomputed Radiance Transfer"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Run the PRT simulator",IDC_STATIC,15,66,271,41
+    DEFPUSHBUTTON   "Go",IDC_RUN_PRT_SIM,125,81,50,14
+    CTEXT           "Why",IDC_WHY,71,29,49,18,SS_NOTIFY | SS_CENTERIMAGE | 
+                    SS_SUNKEN | WS_BORDER,WS_EX_CLIENTEDGE
+    CTEXT           "What",IDC_WHAT,179,29,49,18,SS_NOTIFY | SS_CENTERIMAGE | 
+                    SS_SUNKEN | WS_BORDER,WS_EX_CLIENTEDGE
+    CTEXT           "How",IDC_HOW,125,29,49,18,SS_NOTIFY | SS_CENTERIMAGE | 
+                    SS_SUNKEN | WS_BORDER,WS_EX_CLIENTEDGE
+    LTEXT           "Hover over these for a brief explanation of this sample and PRT:",
+                    IDC_STATIC,19,17,208,8
+    LTEXT           "Mesh file: ",IDC_INPUT_MESH_TEXT,59,128,34,8,SS_NOTIFY
+    EDITTEXT        IDC_INPUT_MESH_EDIT,94,125,129,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse",IDC_INPUT_MESH_BROWSE_BUTTON,228,125,50,14
+    LTEXT           "Simulator results file: ",IDC_SIM_RESULTS_TEXT,23,146,
+                    70,8,SS_NOTIFY
+    EDITTEXT        IDC_SIM_RESULTS_EDIT,94,143,129,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse",IDC_SIM_RESULTS_BROWSE_BUTTON,228,143,50,14
+    DEFPUSHBUTTON   "Go",IDC_VIEW_RESULTS,125,165,50,14
+    GROUPBOX        "View the results from a previously saved PRT simulation",
+                    IDC_STATIC,16,111,271,76
+    GROUPBOX        "Explanation",IDC_STATIC,7,7,288,49
+    GROUPBOX        "What would you like to do",IDC_STATIC,7,58,288,136
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Go/stop\tEnter",             IDM_TOGGLESTART
+        MENUITEM "&Single step\tSpace",         IDM_SINGLESTEP
+        MENUITEM SEPARATOR
+        MENUITEM "&Change device...\tF2",       IDM_CHANGEDEVICE
+        MENUITEM "&View readme\tF9",            IDM_HELP
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tESC",                  IDM_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN_ICON           ICON                    "..\\..\\common\\directx.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define IDC_STATIC -1\r\n"
+    "#include <windows.h>\r\n"
+    "\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_SIMULATION_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 274
+        VERTGUIDE, 274
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 327
+    END
+
+    IDD_STARTUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 295
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 194
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

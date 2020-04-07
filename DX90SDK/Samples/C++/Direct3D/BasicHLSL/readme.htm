@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<TITLE>BasicHLSL Direct3D Sample</TITLE>
+<STYLE TYPE="text/css">
+.h1 { font-family: tahoma; font-size: 18px; font-weight: bold }
+.h2 { font-family: arial; font-size: 14px; font-weight: bold; vertical-align: super; line-height: 20px }
+.h3 { font-family: arial; font-size: 12px; font-weight: bold; vertical-align: super; line-height: 20px }
+.p  { font-family: arial; font-size: 12px; line-height: 16px }
+.header { padding: 3px; font-family: tahoma; font-size: 10px; font-weight: bold; color: white } 
+.chart { font-family: monospace; font-size: 12px }
+</STYLE>
+</HEAD>
+
+<BODY bgColor=#ffffff MARGINHEIGHT="2" TOPMARGIN=2 LEFTMARGIN=2 RIGHTMARGIN=2>
+
+<!-- HEADER - DO NOT MODIFY -->
+<TABLE BACKGROUND="doc/header_background.gif" WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+<TR>
+<TD ALIGN="left"><IMG SRC="doc/header_left.gif" BORDER=0></TD>
+<TD ALIGN="right"><IMG SRC="doc/header_right.gif" BORDER=0></TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=20>
+<TR>
+<TD CLASS="p">
+<!-- END MASTER TABLE -->
+
+<FONT CLASS="h1">
+<!-- INSERT SAMPLE NAME -->
+BasicHLSL Sample
+<!-- END SAMPLE NAME -->
+</FONT>
+<HR>
+
+<TABLE WIDTH="100%" BGCOLOR="#FFFFFF" BORDER=0 CELLPADDING=10 CELLSPACING=0>
+<TR>
+<TD CLASS="p">
+<BR CLEAR="left">
+<IMG style="MARGIN-TOP: -7px; MARGIN-LEFT: -20px" hspace=20 src="BasicHLSL.jpg" align=left vspace=10 >
+<FONT CLASS="h2">Description</FONT><BR>
+<!-- INSERT SAMPLE DESCRIPTION -->
+This sample shows a simple example of the High-Level Shader Language (HLSL) using an effect interface. 
+<!-- END SAMPLE DESCRIPTION -->
+<BR CLEAR="left">
+<BR CLEAR="left">
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<BR CLEAR="left">
+<FONT CLASS="h2">Path</FONT>
+<TABLE STYLE="margin-left: -4px" CELLSPACING=4 CELLPADDING=4 BORDER=0>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Source:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\BasicHLSL</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+<TR>
+<!-- PATH INFORMATION -->
+<TD CLASS="chart" BGCOLOR=#DDDDDD ALIGN="right"><B>Executable:</B></TD>
+<TD CLASS="chart" BGCOLOR=#EEEEEE>DX90SDK\Samples\C++\Direct3D\Bin</TD>
+<!-- END PATH INFORMATION -->
+</TR>
+</TABLE>
+<P>
+<FONT CLASS="h2">Sample Overview</FONT><BR>
+This sample simply loads a mesh, creates an effect from a file, and then uses the effect to render the mesh.  The effect that is used is a simple vertex shader that animates the vertices based on time.
+<P>
+<FONT CLASS="h2">How does the sample work?</FONT><BR>
+First the sample loads the geometry with D3DXLoadMeshFromX() and calls D3DXComputeNormals() to create mesh normals if there aren't any. It then calls OptimizeInplace() to optimize the mesh for the vertex cache. It then loads the textures using D3DXCreateTextureFromFile(). It then calls D3DXCreateEffectFromFile() to compile the effect text file to a ID3DXEffect* interface called m_pEffect. 
+<P>
+Note that the D3DXCreateEffectFromFile() call takes flags which are needed to debug shaders with the Microsoft Visual Studio .NET shader debugger.  Debugging vertex shaders requires either REF or software vertex processing, and debugging pixel shaders requires REF.  The D3DXSHADER_FORCE_*_SOFTWARE_NOOPT flag improves the debug experience in the shader debugger.  It enables source level debugging, prevents instruction reordering, prevents dead code elimination, and forces the compiler to compile against the next higher available software target, which ensures that the unoptimized shaders do not exceed the shader model limitations.  Setting these flags will cause slower rendering since the shaders will be unoptimized and forced into software.  All that is needed to turn these flags on with the sample code is to uncomment the #define DEBUG_VS or #define DEBUG_PS line from near the top of the file.  This will also force the device into software processing by adding some code to CMyD3DApplication::ConfirmDevices().  See the DirectX documentation for more information about using the shader debugger.
+<P>
+In CMyD3DApplication::Render() it sets the technique to use with a call to m_pEffect->SetTechnique(). It passes a D3DXHANDLE to the technique that was obtained upon init with a call to m_pEffect->GetTechniqueByName(). It is possible to pass a string name instead of a handle, but using a handle improves performance since this high frequency call does not have to spend time on a string compare. 
+<P>It then sets variables used by the technique such as the World*View*Projection matrix and the time variable with various ID3DXEffect::Set*() calls. 
+To render it calls m_pEffect->Begin() which returns the number of passes required by the technique, then it loops through each pass calling m_pEffect->Pass(iPass) and rendering the mesh with m_pMesh->DrawSubset(). When all the passes are done, it calls m_pEffect->End(). 
+<P>
+<!-- FOOTER - DO NOT MODIFY -->
+<BR clear="left">
+<BR clear="left">
+<BR clear="left">
+<HR>
+<CENTER>
+Copyright (c) Microsoft Corporation. All rights reserved.
+</CENTER>
+<!-- END FOOTER -->
+
+<!-- MASTER TABLE - DO NOT MODIFY -->
+</TD>
+</TR>
+</TABLE>
+<!-- END MASTER TABLE -->
+
+</BODY>
+</HTML>
